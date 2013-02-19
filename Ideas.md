@@ -23,10 +23,10 @@ Database Fields
 Application
 ======================
 * 2 services
-*   1 to run on boot (or on request) to check for new episodes
-*   1 to watch the 'Unsorted Downloads' folder for new items
+  * 1 to run on boot (or on request) to check for new episodes
+  * 1 to watch the 'Unsorted Downloads' folder for new items
 * List of Show Artwork similar to seriesguide-chrome
 * Long press options:
-*   Play latest episode (opens video player)
-*   Manual check for new episodes
-*   Delete from favourites
+  * Play latest episode (opens video player)
+  * Manual check for new episodes
+  * Delete from favourites
