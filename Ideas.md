@@ -1,7 +1,7 @@
 Process to check for new episodes
 ==================================
 
-1. Scan TV_DB for new episodes
+1. Scan TVDb/TVRage for new episodes
 2. Search TPB for torrent
 3. Put torrent in 'Incoming Torrents'
 4. When that's finished it goes into 'Unsorted Downloads'
@@ -12,7 +12,7 @@ Process to check for new episodes
 Database Fields
 ====================
 * Show Name
-* Show ID (tvdb id)
+* Show ID (tvdb/tvrage id)
 * Last downloaded episode date
 * Next episode date (update only if < current date)
 * Prev episode name
@@ -34,4 +34,6 @@ Application
 Useful Links
 ====================
 * [Java TVDb API](https://github.com/Omertron/api-thetvdb)
+* [Java TVRage API](https://github.com/Omertron/api-tvrage)
 * [Download torrents from TPB](http://www.geniouspc.com/2012/03/trick-how-to-download-pirate-bay.html)
+* [TvNamer](https://github.com/dbr/tvnamer) - Useful to check out the parser that's used for filenames
