@@ -30,3 +30,8 @@ Application
   * Play latest episode (opens video player)
   * Manual check for new episodes
   * Delete from favourites
+
+Useful Links
+====================
+* [Java TVDb API](https://github.com/Omertron/api-thetvdb)
+* [Download torrents from TPB](http://www.geniouspc.com/2012/03/trick-how-to-download-pirate-bay.html)
