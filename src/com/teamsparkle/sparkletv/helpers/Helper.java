@@ -3,6 +3,8 @@ package com.teamsparkle.sparkletv.helpers;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.Calendar;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -90,5 +92,19 @@ public class Helper {
 	             }
 	         }
 	         return "";
-	  } 
+	}
+	
+	public long daysDiff(Date date1, Date date2) {
+		Calendar start = Calendar.getInstance();
+		Calendar end = Calendar.getInstance();
+		start.set(2010, 7, 23);
+		end.set(2010, 8, 26);
+		Date startDate = date1;
+		Date endDate = date2;
+		long startTime = startDate.getTime();
+		long endTime = endDate.getTime();
+		long diffTime = endTime - startTime;
+		long diffDays = diffTime / (1000 * 60 * 60 * 24);
+		return diffDays;
+	}
 }

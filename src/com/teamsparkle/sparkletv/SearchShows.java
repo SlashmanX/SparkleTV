@@ -2,6 +2,7 @@ package com.teamsparkle.sparkletv;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,6 +24,9 @@ import android.widget.TextView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.omertron.tvrageapi.model.EpisodeList;
+import com.omertron.tvrageapi.model.ShowInfo;
+import com.omertron.tvrageapi.tools.TVRageParser;
 import com.team.sparkle.sparkletv.R;
 import com.teamsparkle.sparkletv.helpers.Helper;
 import com.teamsparkle.sparkletv.helpers.Show;
@@ -58,15 +62,49 @@ public class SearchShows extends Activity {
                 // getting values from selected ListItem
                 String name = ((TextView) view.findViewById(R.id.show_name)).getText().toString();
                 String showid = ((TextView) view.findViewById(R.id.show_id)).getText().toString();
-                Show show = new Show();
-                show.setId(Integer.parseInt(showid));
-                show.setName(name);
-                db.addShow(show);
-                Toast.makeText(getApplicationContext(), "Show added!", Toast.LENGTH_SHORT).show();
-                finish();
+                new getShowInfoTask().execute(showid);
             }
         });
 
+	}
+	
+	class getShowInfoTask extends AsyncTask<String, Void, Void> {
+		Show show = new Show();
+		static final String URL = "http://services.tvrage.com/feeds/full_show_info.php?sid=";
+	
+	    @Override
+	    protected Void doInBackground(String... params) {
+	    	Helper parser = new Helper();
+			String xml = parser.getXmlFromUrl(URL + params[0]);
+			Document doc = parser.getDomElement(xml);
+			
+			List<ShowInfo> showList = TVRageParser.getSearchShow(doc);
+			
+            show.setId(showList.get(0).getShowID());
+            show.setName(showList.get(0).getShowName());
+			
+			EpisodeList epList = TVRageParser.getEpisodeList(doc);
+			show.setCurrentEpisode(epList.getLatestEpisode().getEpisodeNumber().getEpisode());
+			show.setCurrentSeason(epList.getLatestEpisode().getEpisodeNumber().getSeason());
+			
+			Log.d("Latest Episode", epList.getLatestEpisode().getEpisodeNumber().getSxxEyy());
+			
+	        return null;
+	
+	    }
+	
+	    @Override
+	    protected void onPostExecute(Void result) {
+	        super.onPostExecute(result);
+            db.addShow(show);
+            Toast.makeText(getApplicationContext(), "Show added!", Toast.LENGTH_SHORT).show();
+            finish();
+	    }
+	
+	    @Override
+	    protected void onPreExecute() {
+	        super.onPreExecute();
+	    }
 	}
 
 	class SearchShowsTask extends AsyncTask<String, Void, Void> {

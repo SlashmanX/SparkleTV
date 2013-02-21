@@ -73,9 +73,10 @@ public class ShowDatabaseManager {
                         values.put(TABLE_ROW_NEXT_EP_DATE, show.getNextEpisodeDate().toString("yyyy-MM-dd"));
                         values.put(TABLE_ROW_LAST_EP_NAME, show.getLastEpisodeName());
                         values.put(TABLE_ROW_NEXT_EP_NAME, show.getNextEpisodeName());
+                        */
                         values.put(TABLE_ROW_CURRENT_SEASON, show.getCurrentSeason());
                         values.put(TABLE_ROW_CURRENT_EPISODE, show.getCurrentEpisode());
-                        */
+                        
                  
                         // ask the database object to insert the new data 
                         try

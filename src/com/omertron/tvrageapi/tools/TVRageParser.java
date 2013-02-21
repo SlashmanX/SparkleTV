@@ -72,16 +72,8 @@ public class TVRageParser {
         return episode;
     }
 
-    public static EpisodeList getEpisodeList(String searchUrl) {
+    public static EpisodeList getEpisodeList(Document doc) {
         EpisodeList epList = new EpisodeList();
-        Document doc;
-
-        try {
-            doc = DOMHelper.getEventDocFromUrl(searchUrl);
-        } catch (Exception error) {
-            logger.warn(LOG_MESSAGE + error.getMessage());
-            return epList;
-        }
 
         NodeList nlEpisodeList;
         Node nEpisodeList;
@@ -132,20 +124,11 @@ public class TVRageParser {
         return epList;
     }
 
-    public static List<ShowInfo> getSearchShow(String searchUrl) {
+    public static List<ShowInfo> getSearchShow(Document doc) {
         List<ShowInfo> showList = new ArrayList<ShowInfo>();
         ShowInfo showInfo;
-        Document doc;
 
-        Log.d("Parser", "In here");
-        try {
-            doc = DOMHelper.getEventDocFromUrl(searchUrl);
-        } catch (Exception error) {
-            Log.w("Parser", LOG_MESSAGE + error.getMessage());
-            return showList;
-        }
-
-        NodeList nlShowInfo = doc.getElementsByTagName("show");
+        NodeList nlShowInfo = doc.getElementsByTagName("Show");
 
         if (nlShowInfo == null || nlShowInfo.getLength() == 0) {
             return showList;

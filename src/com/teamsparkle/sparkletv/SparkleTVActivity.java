@@ -30,6 +30,7 @@ public class SparkleTVActivity extends Activity {
 		setContentView(R.layout.main);
 		
 		db = new ShowDatabaseManager(this);
+		db.clearDatabase();
 		updateFavList();
 	}
 	
@@ -61,11 +62,14 @@ public class SparkleTVActivity extends Activity {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("showid", Integer.toString(tmp.get(i).getId()));
 			map.put("name", tmp.get(i).getName());
+			map.put("currentSeason", "" + tmp.get(i).getCurrentSeason());
+			map.put("currentEpisode", "" + tmp.get(i).getCurrentEpisode());
 			favShows.add(map);
 		}
 		
 		ListAdapter listAdapter = new SimpleAdapter(this, favShows, R.layout.fav_show_list_item,
-				new String[] { "name" }, new int[] { R.id.fav_show_name});
+				new String[] { "name", "currentSeason", "currentEpisode" }, 
+				new int[] { R.id.fav_show_name, R.id.season_num, R.id.episode_num});
         
         ListView list = (ListView) findViewById(R.id.fav_shows_list);
         

@@ -2,6 +2,8 @@ package com.teamsparkle.sparkletv.helpers;
 
 import org.pojava.datetime.DateTime;
 
+import com.omertron.tvrageapi.model.EpisodeList;
+
 public class Show {
 	private int id;
 	private String name;
@@ -11,10 +13,11 @@ public class Show {
 	private String nextEpisodeName;
 	private int currentSeason;
 	private int currentEpisode;
+	private EpisodeList episodeList;
 	
 	public Show(int id, String name, DateTime lastEpisodeDate,
 			DateTime nextEpisodeDate, String lastEpisodeName,
-			String nextEpisodeName, int currentSeason, int currentEpisode) {
+			String nextEpisodeName, int currentSeason, int currentEpisode, EpisodeList episodeList) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -24,6 +27,7 @@ public class Show {
 		this.nextEpisodeName = nextEpisodeName;
 		this.currentSeason = currentSeason;
 		this.currentEpisode = currentEpisode;
+		this.episodeList = episodeList;
 	}
 
 	public Show() {
@@ -93,6 +97,16 @@ public class Show {
 	public void setCurrentEpisode(int currentEpisode) {
 		this.currentEpisode = currentEpisode;
 	}
+
+	public EpisodeList getEpisodeList() {
+		return episodeList;
+	}
+
+	public void setEpisodeList(EpisodeList episodeList) {
+		this.episodeList = episodeList;
+	}
+	
+	
 	
 	
 }

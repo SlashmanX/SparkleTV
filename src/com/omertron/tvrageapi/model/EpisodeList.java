@@ -19,12 +19,19 @@
  */
 package com.omertron.tvrageapi.model;
 
+import android.util.Log;
+
 import com.omertron.tvrageapi.TVRageApi;
+import com.teamsparkle.sparkletv.helpers.Helper;
+
 import static com.omertron.tvrageapi.TVRageApi.convertStrToInt;
 import static com.omertron.tvrageapi.TVRageApi.isValidString;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.pojava.datetime.DateTime;
 
 /**
  * A list of episode in a HashMap format for easy searching and retrieval
@@ -41,6 +48,7 @@ public class EpisodeList implements Serializable {
     /*
      * Properties
      */
+    public static Helper helper = new Helper();
     private String showName;
     private int totalSeasons;
     private Map<EpisodeNumber, Episode> episodeList;
@@ -80,6 +88,26 @@ public class EpisodeList implements Serializable {
 
     public Episode getEpisode(String season, String episode) {
         return getEpisode(new EpisodeNumber(season, episode));
+    }
+    
+    public Episode getLatestEpisode() {
+    	Episode tmp = new Episode();
+    	long diff = 100000000;
+    	Date now = new Date(new java.util.Date().getTime());
+    	for(Map.Entry<EpisodeNumber, Episode> m : this.episodeList.entrySet())
+    	{
+    		Date aired = m.getValue().getAirDate();
+    		if(aired.before(now) && helper.daysDiff(aired, now) < diff){
+    			tmp = m.getValue();
+    			diff = helper.daysDiff(aired, now);
+    		}
+    	}
+    	
+    	Log.d("Num episodes", this.episodeList.size() + "");
+    	
+    	Log.d("Latest Episode", tmp.getTitle() + " : "+ diff);
+    	
+    	return tmp;
     }
 
     public String getShowName() {

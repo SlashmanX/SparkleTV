@@ -87,14 +87,14 @@ public class TVRageApi {
      *
      * @param showID
      */
-    public EpisodeList getEpisodeList(String showID) {
+    /*public EpisodeList getEpisodeList(String showID) {
         if (!isValidString(showID)) {
             return new EpisodeList();
         }
 
         String tvrageURL = buildURL(API_EPISODE_LIST, showID).toString();
         return TVRageParser.getEpisodeList(tvrageURL);
-    }
+    }*/
 
     /**
      * Search for the show using the show ID
@@ -130,7 +130,7 @@ public class TVRageApi {
      * @param showName
      * @return list of matching shows
      */
-    public List<ShowInfo> searchShow(String showName) {
+    /*public List<ShowInfo> searchShow(String showName) {
 
         if (!isValidString(showName)) {
             return new ArrayList<ShowInfo>();
@@ -138,7 +138,7 @@ public class TVRageApi {
 
         String tvrageURL = buildURL(API_SEARCH, showName).toString();
         return TVRageParser.getSearchShow(tvrageURL);
-    }
+    }*/
 
     public void setProxy(String host, String port, String username, String password) {
         WebBrowser.setProxyHost(host);
