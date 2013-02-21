@@ -36,4 +36,5 @@ Useful Links
 * [Java TVDb API](https://github.com/Omertron/api-thetvdb)
 * [Java TVRage API](https://github.com/Omertron/api-tvrage)
 * [Download torrents from TPB](http://www.geniouspc.com/2012/03/trick-how-to-download-pirate-bay.html)
+* [isoHunt JSON Search (includes direct link to .torrent)](http://isohunt.com/js/json.php?ihq=castle.s05e01&sort=seeds)
 * [TvNamer](https://github.com/dbr/tvnamer) - Useful to check out the parser that's used for filenames
