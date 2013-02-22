@@ -9,16 +9,34 @@ Process to check for new episodes
 6. On new file, parse name, rename & move
 
 
-Database Fields
+Database
 ====================
+* A show can have many episodes
+* An episode can only have 1 show
+
+Show
+-------
 * Show Name
 * Show ID (tvdb/tvrage id)
-* Last downloaded episode date
-* Next episode date (update only if < current date)
-* Prev episode name
-* Next episode name
-* Current season #
-* Current episode #
+* Latest aired episode # (foreign key episodes table)
+* Air Day
+* Air Time
+* Still running
+* Genre(s)
+* Runtime
+* Summary
+* Total Seasons
+
+Episode
+--------
+* Episode id
+* Show ID (foreign key)
+* AirDate
+* Season #
+* Episode #
+* Name
+* Summary
+* hasBeenDownloaded
 
 Schedule
 ======================
