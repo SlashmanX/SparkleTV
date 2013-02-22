@@ -20,6 +20,12 @@ Database Fields
 * Current season #
 * Current episode #
 
+Schedule
+======================
+* Save episode info in separate table
+* Allow user to view a schedule of upcoming episodes
+* Allow user to refresh the episode schedule
+
 Application
 ======================
 * 2 services
