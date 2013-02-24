@@ -1,6 +1,9 @@
 package com.teamsparkle.sparkletv.helpers;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -13,9 +16,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -106,5 +112,52 @@ public class Helper {
 		long diffTime = endTime - startTime;
 		long diffDays = diffTime / (1000 * 60 * 60 * 24);
 		return diffDays;
+	}
+	
+	public static JSONObject getJSONfromURL(String url) {
+
+        //initialize
+        InputStream is = null;
+        String result = "";
+        JSONObject jArray = null;
+
+        //http post
+        try{
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpPost httppost = new HttpPost(url);
+                HttpResponse response = httpclient.execute(httppost);
+                HttpEntity entity = response.getEntity();
+                is = entity.getContent();
+
+        }catch(Exception e){
+                // Connection error
+                Log.e("CONNECTION!!!!", "Connection Error\n"+ e.getMessage() );
+                return null;
+        }
+
+        //convert response to string
+        try{
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is,"iso-8859-1"),8);
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                        sb.append(line + "\n");
+                }
+                is.close();
+                result=sb.toString();
+        }catch(Exception e){
+                // reading error
+                Log.e("READING!!!!", "Reading Error");
+        }
+
+        //try parse the string to a JSON object
+        try{
+                jArray = new JSONObject(result);
+        }catch(JSONException e){
+                //JSON Parsing Error
+                Log.e("PARSING!!!!", "Parsing Error");
+        }
+
+        return jArray;
 	}
 }

@@ -9,15 +9,16 @@
     <TextView
         android:id="@+id/fav_show_name"
         android:layout_gravity="fill_horizontal"
-        android:padding="20px"
+        android:padding="20dp"
         android:text="TextView"
-        android:textSize="35px" />
+        android:textSize="35dp" />
 
     <TextView
         android:id="@+id/lastEpisodeLabel"
         android:layout_column="0"
         android:layout_gravity="left"
-        android:text="Latest Episode:" />
+        android:text="Latest Episode:"
+        android:padding="5dp" />
 
     <Space
         android:layout_column="1"
@@ -29,13 +30,15 @@
         android:layout_column="0"
         android:layout_gravity="center_horizontal|top"
         android:layout_row="1"
-        android:text="TextView" />
+        android:text="Season"
+        android:padding="5dp" />
 
     <TextView
         android:id="@+id/episode_num"
         android:layout_column="0"
-        android:layout_gravity="right|top"
+        android:layout_gravity="top|right"
         android:layout_row="1"
-        android:text="TextView" />
+        android:padding="5dp"
+        android:text="Episode" />
 
 </GridLayout>

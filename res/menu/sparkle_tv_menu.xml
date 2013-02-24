@@ -9,6 +9,11 @@
     <item android:id="@+id/menu_search" 
         android:actionViewClass="android.widget.SearchView"
 		android:showAsAction="ifRoom"
-		android:title="Search"/>
+		android:icon="@drawable/ic_menu_add"
+		android:title="Add"/>
+    <item android:id="@+id/menu_clear" 
+		android:showAsAction="ifRoom"
+		android:title="Clear DB"
+		android:icon="@drawable/ic_menu_close_clear_cancel"/>
 
 </menu>
