@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:columnCount="3"
+    android:padding="5dp"
     android:orientation="horizontal" >
 
     <TextView
@@ -36,18 +37,16 @@
         android:layout_column="0"
         android:layout_gravity="left|center_vertical"
         android:layout_row="0"
-        android:padding="20dp"
         android:text="TextView" />
 
     <TextView
         android:id="@+id/episode_name"
         style="@android:style/TextAppearance.Large"
-        android:layout_column="0"
-        android:layout_columnSpan="3"
+        android:layout_column="1"
         android:padding="5dp"
         android:layout_gravity="left|center_vertical"
         android:layout_row="0"
-        android:text="TextView" />
+        android:text="Episode Name" />
     
     <TextView
         android:id="@+id/episode_summary"

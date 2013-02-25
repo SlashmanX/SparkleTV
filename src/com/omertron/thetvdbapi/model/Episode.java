@@ -119,6 +119,14 @@ public class Episode implements Serializable {
     public int getEpisodeNumber() {
         return episodeNumber;
     }
+    
+    public String getSxxEyy() {
+    	return String.format("S%02dE%02d", getSeasonNumber(), getEpisodeNumber());
+    }
+    
+    public String getSxE() {
+    	return String.format("%02dx%02d", getSeasonNumber(), getEpisodeNumber());
+    }
 
     public String getFilename() {
         return filename;

@@ -83,6 +83,8 @@ public class ScheduleFragment extends Fragment {
 			map.put("epid", ep.getId());
 			map.put("episode_name", ep.getEpisodeName());
 			map.put("summary", ep.getOverview());
+			map.put("SE", ep.getSxxEyy());
+			map.put("se", ep.getSxE());
 			schedule.add(map);
 		}
 		

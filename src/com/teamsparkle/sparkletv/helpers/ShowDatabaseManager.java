@@ -207,7 +207,6 @@ public class ShowDatabaseManager {
         }
         
         public List<Episode> getEpisodeList(int showID) {
-        	Log.d("GETTING EPISODES", Integer.toString(showID));
         	List<Episode> epList = new ArrayList<Episode>();
         	Episode tmp = new Episode();
         	Cursor cursor = null;
@@ -225,7 +224,6 @@ public class ShowDatabaseManager {
                     null, null, null, null, null
                 );
                 cursor.moveToNext();
-                Log.d("Num episodes", cursor.getCount() +"");
                 do
                 {
                 	tmp = new Episode();
