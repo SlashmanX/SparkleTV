@@ -16,13 +16,29 @@
     <Space
         android:layout_column="1"
         android:layout_gravity="fill_vertical"
-        android:layout_row="5" />
+        android:layout_row="6" />
 
     <TextView
         android:id="@+id/episode_id"
         android:layout_column="0"
         android:layout_gravity="left|top"
         android:layout_row="4"
+        android:text="TextView"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/episode_season_episode"
+        android:layout_column="0"
+        android:layout_gravity="left|top"
+        android:layout_row="5"
+        android:text="TextView"
+        android:visibility="gone" />
+    
+    <TextView
+        android:id="@+id/episode_show_name"
+        android:layout_column="0"
+        android:layout_gravity="left|top"
+        android:layout_row="5"
         android:text="TextView"
         android:visibility="gone" />
 

@@ -4,10 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,11 +18,14 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -28,6 +34,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import android.util.Log;
 
@@ -114,50 +125,53 @@ public class Helper {
 		return diffDays;
 	}
 	
-	public static JSONObject getJSONfromURL(String url) {
+	private static InputStream retrieveStream(String url) {
+        
+        DefaultHttpClient client = new DefaultHttpClient(); 
+        
+        HttpGet getRequest = new HttpGet(url);
+          
+        try {
+           
+           HttpResponse getResponse = client.execute(getRequest);
+           final int statusCode = getResponse.getStatusLine().getStatusCode();
+           
+           if (statusCode != HttpStatus.SC_OK) { 
+              return null;
+           }
 
-        //initialize
-        InputStream is = null;
-        String result = "";
-        JSONObject jArray = null;
+           HttpEntity getResponseEntity = getResponse.getEntity();
+           return getResponseEntity.getContent();
+           
+        } 
+        catch (IOException e) {
+           getRequest.abort();
+        }
+        
+        return null;
+        
+     }
+	
+	public static List<TorrentSearchResult> getJSONfromURL(String url) {
 
-        //http post
-        try{
-                HttpClient httpclient = new DefaultHttpClient();
-                HttpPost httppost = new HttpPost(url);
-                HttpResponse response = httpclient.execute(httppost);
-                HttpEntity entity = response.getEntity();
-                is = entity.getContent();
-
-        }catch(Exception e){
-                // Connection error
-                Log.e("CONNECTION!!!!", "Connection Error\n"+ e.getMessage() );
-                return null;
+		InputStream source = retrieveStream(url);
+        
+        Gson gson = new Gson();
+        
+        JsonParser parser = new JsonParser();
+        
+        Reader reader = new InputStreamReader(source);
+        
+        JsonArray Jarray = parser.parse(reader).getAsJsonArray();
+        
+        List<TorrentSearchResult> res = new ArrayList<TorrentSearchResult>();
+        
+        for(JsonElement obj : Jarray)
+        {
+        	TorrentSearchResult tsr = gson.fromJson(obj, TorrentSearchResult.class);
+        	res.add(tsr);
         }
 
-        //convert response to string
-        try{
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is,"iso-8859-1"),8);
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                        sb.append(line + "\n");
-                }
-                is.close();
-                result=sb.toString();
-        }catch(Exception e){
-                // reading error
-                Log.e("READING!!!!", "Reading Error");
-        }
-
-        //try parse the string to a JSON object
-        try{
-                jArray = new JSONObject(result);
-        }catch(JSONException e){
-                //JSON Parsing Error
-                Log.e("PARSING!!!!", "Parsing Error");
-        }
-
-        return jArray;
+        return res;
 	}
 }

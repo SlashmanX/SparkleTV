@@ -251,6 +251,8 @@ public class ShowDatabaseManager {
             }
             
             cursor.close();
+            
+            epList.setShowName(getShow(showID).getName());
         	
         	return epList;
         }

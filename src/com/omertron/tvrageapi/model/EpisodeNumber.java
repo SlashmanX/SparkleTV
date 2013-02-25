@@ -98,7 +98,7 @@ public class EpisodeNumber implements Comparable<EpisodeNumber>, Serializable {
     }
 
     public String getSxxEyy() {
-        return String.format("S%2dE%2d", season, episode);
+        return String.format("S%02dE%02d", season, episode);
     }
 
     public void setAbsolute(int absolute) {
