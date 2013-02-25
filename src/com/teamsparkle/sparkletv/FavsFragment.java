@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.SimpleAdapter;
 
 public class FavsFragment extends ListFragment {
@@ -46,7 +47,7 @@ public class FavsFragment extends ListFragment {
             // In dual-pane mode, the list view highlights the selected item.
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             
-            showDetails(mCurCheckPosition);
+            //showDetails(mCurCheckPosition);
         }
     }
     
@@ -63,7 +64,8 @@ public class FavsFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        showDetails(position);
+    	int showid = Integer.parseInt(((TextView) v.findViewById(R.id.show_id)).getText().toString());
+        showDetails(position, showid);
     }
 
     /**
@@ -71,7 +73,7 @@ public class FavsFragment extends ListFragment {
      * displaying a fragment in-place in the current UI, or starting a
      * whole new activity in which it is displayed.
      */
-    void showDetails(int index) {
+    void showDetails(int index, int id) {
         mCurCheckPosition = index;
 
         if (isDualPane) {
@@ -82,9 +84,9 @@ public class FavsFragment extends ListFragment {
             // Check what fragment is currently shown, replace if needed.
             ScheduleFragment schedule = (ScheduleFragment)
                     getActivity().getFragmentManager().findFragmentById(R.id.schedule);
-            if (schedule == null || schedule.getShownIndex() != index) {
+            if (schedule == null || schedule.getShowID() != id) {
                 // Make new fragment to show this selection.
-            	schedule = ScheduleFragment.newInstance(index);
+            	schedule = ScheduleFragment.newInstance(id);
 
                 // Execute a transaction, replacing any existing fragment
                 // with this one inside the frame.
@@ -99,8 +101,9 @@ public class FavsFragment extends ListFragment {
             // the dialog fragment with selected text.
             Intent intent = new Intent();
             intent.setClass(getActivity(), ScheduleActivity.class);
-            intent.putExtra("index", index);
+            intent.putExtra("showid", id);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }
     }
     
@@ -112,16 +115,12 @@ public class FavsFragment extends ListFragment {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("showid", Integer.toString(tmp.get(i).getId()));
 			map.put("name", tmp.get(i).getName());
-			map.put("currentSeason", "" + tmp.get(i).getCurrentSeason());
-			map.put("currentEpisode", "" + tmp.get(i).getCurrentEpisode());
 			favShows.add(map);
 		}
 		
 		ListAdapter listAdapter = new SimpleAdapter(getActivity(), favShows, R.layout.fav_show_list_item,
-				new String[] { "name", "currentSeason", "currentEpisode" }, 
-				new int[] { R.id.fav_show_name, R.id.season_num, R.id.episode_num});
-        
-        ListView list = getListView();
+				new String[] { "name", "showid" }, 
+				new int[] { R.id.fav_show_name, R.id.show_id});
         
         setListAdapter(listAdapter);
 	}

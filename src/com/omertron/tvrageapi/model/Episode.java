@@ -41,6 +41,7 @@ public class Episode implements Serializable {
     private String link = UNKNOWN;
     private String title = UNKNOWN;
     private String summary = UNKNOWN;
+    private boolean downloaded = false;
     private float rating = 0.0f;
     private String screenCap = UNKNOWN;
 
@@ -57,6 +58,10 @@ public class Episode implements Serializable {
             return true;
         }
         return false;
+    }
+    
+    public int getId() {
+    	return this.episodeNumber.getAbsolute();
     }
 
     /**
@@ -185,4 +190,12 @@ public class Episode implements Serializable {
             this.screenCap = UNKNOWN;
         }
     }
+
+	public boolean isDownloaded() {
+		return downloaded;
+	}
+
+	public void setDownloaded(boolean downloaded) {
+		this.downloaded = downloaded;
+	}
 }

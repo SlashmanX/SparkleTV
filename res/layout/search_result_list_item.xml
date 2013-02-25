@@ -11,13 +11,14 @@
         android:padding="20px"
         android:text="TextView"
         android:textSize="20px" />
+
     <TextView
         android:id="@+id/show_id"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="20px"
-        android:text="TextView" 
-        android:visibility="invisible"
-        android:textSize="20px" />
+        android:text="TextView"
+        android:textSize="20px"
+        android:visibility="gone" />
 
 </LinearLayout>

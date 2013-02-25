@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -70,6 +71,7 @@ public class SearchShows extends Activity {
 	
 	class getShowInfoTask extends AsyncTask<String, Void, Void> {
 		Show show = new Show();
+		EpisodeList epList = new EpisodeList();
 		static final String URL = "http://services.tvrage.com/feeds/full_show_info.php?sid=";
 	
 	    @Override
@@ -79,13 +81,20 @@ public class SearchShows extends Activity {
 			Document doc = parser.getDomElement(xml);
 			
 			List<ShowInfo> showList = TVRageParser.getSearchShow(doc);
+
+			ShowInfo tmp = showList.get(0);
 			
-            show.setId(showList.get(0).getShowID());
-            show.setName(showList.get(0).getShowName());
+            show.setId(tmp.getShowID());
+            show.setName(tmp.getShowName());
+            show.setAirDay(tmp.getAirDay());
+            show.setAirTime(tmp.getAirTime());
+            show.setGenre(StringUtils.join(tmp.getGenres(), ", "));
+            show.setNumSeasons(tmp.getTotalSeasons());
+            show.setRunning(tmp.getEnded().length() > 0);
+            show.setRunTime(tmp.getRuntime());
+            show.setSummary(tmp.getSummary());
 			
-			EpisodeList epList = TVRageParser.getEpisodeList(doc);
-			show.setCurrentEpisode(epList.getLatestEpisode().getEpisodeNumber().getEpisode());
-			show.setCurrentSeason(epList.getLatestEpisode().getEpisodeNumber().getSeason());
+			epList = TVRageParser.getEpisodeList(doc);
 			
 			Log.d("Latest Episode", epList.getLatestEpisode().getEpisodeNumber().getSxxEyy());
 			
@@ -97,6 +106,7 @@ public class SearchShows extends Activity {
 	    protected void onPostExecute(Void result) {
 	        super.onPostExecute(result);
             db.addShow(show);
+            db.addEpisodeList(epList);
             Toast.makeText(getApplicationContext(), "Show added!", Toast.LENGTH_SHORT).show();
             finish();
 	    }

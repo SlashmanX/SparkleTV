@@ -50,11 +50,13 @@ public class EpisodeList implements Serializable {
      */
     public static Helper helper = new Helper();
     private String showName;
+    private int showId;
     private int totalSeasons;
     private Map<EpisodeNumber, Episode> episodeList;
 
     public EpisodeList() {
         showName = TVRageApi.UNKNOWN;
+        showId = -1;
         totalSeasons = 0;
         episodeList = new TreeMap<EpisodeNumber, Episode>();
     }
@@ -126,7 +128,15 @@ public class EpisodeList implements Serializable {
         }
     }
 
-    public void setTotalSeasons(int totalSeasons) {
+    public int getShowId() {
+		return showId;
+	}
+
+	public void setShowId(int showId) {
+		this.showId = showId;
+	}
+
+	public void setTotalSeasons(int totalSeasons) {
         this.totalSeasons = totalSeasons;
     }
 

@@ -90,6 +90,7 @@ public class TVRageParser {
             if (nEpisodeList.getNodeType() == Node.ELEMENT_NODE) {
                 eEpisodeList = (Element) nEpisodeList;
                 epList.setShowName(DOMHelper.getValueFromElement(eEpisodeList, "name"));
+                epList.setShowId(Integer.parseInt(DOMHelper.getValueFromElement(eEpisodeList, "showid")));
                 epList.setTotalSeasons(DOMHelper.getValueFromElement(eEpisodeList, "totalseasons"));
             }
         }

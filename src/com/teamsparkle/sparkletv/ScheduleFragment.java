@@ -15,19 +15,19 @@ public class ScheduleFragment extends Fragment {
      * Create a new instance of DetailsFragment, initialized to
      * show the text at 'index'.
      */
-    public static ScheduleFragment newInstance(int index) {
+    public static ScheduleFragment newInstance(int showid) {
     	ScheduleFragment f = new ScheduleFragment();
 
         // Supply index input as an argument.
         Bundle args = new Bundle();
-        args.putInt("index", index);
+        args.putInt("showid", showid);
         f.setArguments(args);
 
         return f;
     }
 
-    public int getShownIndex() {
-        return getArguments().getInt("index", 0);
+    public int getShowID() {
+        return getArguments().getInt("showid", 0);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ScheduleFragment extends Fragment {
         int padding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getActivity().getResources().getDisplayMetrics());
         text.setPadding(padding, padding, padding, padding);
         scroller.addView(text);
-        text.setText("Hello");
+        text.setText("Selected: "+ getShowID());
         return scroller;
     }
 }
