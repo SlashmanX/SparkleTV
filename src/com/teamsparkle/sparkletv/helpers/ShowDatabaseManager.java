@@ -57,7 +57,6 @@ public class ShowDatabaseManager {
  
                 // create or open the database
 
-                Log.v("DBManager", "Start of constructor");
                 this.helper = new ShowSQLiteDBHelper(this.context);
                 this.db = helper.getWritableDatabase();
                 
@@ -107,7 +106,6 @@ public class ShowDatabaseManager {
         
         public void addEpisodeList(String showid, List<Episode> epList)
         {
-        	Log.d("ADDING EPISODES", showid + "Number: "+ epList.size());
         	for(Episode ep : epList) {
                 if(episodeExists(ep) == -1)
                 {
@@ -363,8 +361,6 @@ public class ShowDatabaseManager {
             public ShowSQLiteDBHelper(Context context) {
                     
                     super(context, DB_NAME, null, DB_VERSION);
-
-                    Log.v("DBHelper", "End of constructor");
                     // TODO Auto-generated constructor stub
             }
                 

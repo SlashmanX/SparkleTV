@@ -63,7 +63,7 @@ public class SearchShows extends Activity {
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
                 // getting values from selected ListItem
-                String showid = ((TextView) view.findViewById(R.id.show_id)).getText().toString();
+                String showid = ((TextView) view.findViewById(R.id.search_show_id)).getText().toString();
                 Log.d("Show", showid + "");
                 new getShowInfoTask().execute(showid);
             }
@@ -125,6 +125,7 @@ public class SearchShows extends Activity {
 				Series s = search.get(i);
 				map.put(KEY_ID, s.getId());
 				map.put(KEY_NAME, s.getSeriesName());
+				map.put("summary", s.getOverview());
 				searchResults.add(map);
 			}
 	        return null;
@@ -137,8 +138,8 @@ public class SearchShows extends Activity {
 			 
 	        ListAdapter adapter = new SimpleAdapter(SearchShows.this, searchResults,
 	                R.layout.search_result_list_item,
-	                new String[] { KEY_NAME, KEY_ID }, new int[] {
-	                        R.id.show_name, R.id.show_id});
+	                new String[] { KEY_NAME, KEY_ID, "summary" }, new int[] {
+	                        R.id.search_show_name, R.id.search_show_id, R.id.search_show_summary});
 	        list.setAdapter(adapter);
 	    }
 	
