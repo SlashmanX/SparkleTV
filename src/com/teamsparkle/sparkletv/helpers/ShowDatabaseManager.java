@@ -127,7 +127,7 @@ public class ShowDatabaseManager {
                         // ask the database object to insert the new data 
                         try
                         {
-                                db.insert(SHOW_TABLE_NAME, null, values);
+                                db.insert(EPISODE_TABLE_NAME, null, values);
                         }
                         catch(Exception e)
                         {
@@ -229,8 +229,10 @@ public class ShowDatabaseManager {
                 cursor.moveToNext();
                 do
                 {
+                	tmp = new Episode();
                     tmp.setTitle(cursor.getString(0));
                     tmp.setAirDate(cursor.getString(1));
+                    epNum = new EpisodeNumber();
                     epNum.setSeason(cursor.getInt(2));
                     epNum.setEpisode(cursor.getInt(3));
                     tmp.setEpisodeNumber(epNum);
