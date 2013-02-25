@@ -25,9 +25,9 @@ import android.widget.TextView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import com.omertron.tvrageapi.model.EpisodeList;
-import com.omertron.tvrageapi.model.ShowInfo;
-import com.omertron.tvrageapi.tools.TVRageParser;
+import com.omertron.thetvdbapi.TheTVDBApi;
+import com.omertron.thetvdbapi.model.Episode;
+import com.omertron.thetvdbapi.model.Series;
 import com.team.sparkle.sparkletv.R;
 import com.teamsparkle.sparkletv.helpers.Helper;
 import com.teamsparkle.sparkletv.helpers.Show;
@@ -40,12 +40,14 @@ public class SearchShows extends Activity {
 	static final String KEY_ID = "showid";
 	static final String KEY_NAME = "name";
 	public ShowDatabaseManager db;
+	public TheTVDBApi tvdb;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.search_show);
 		db = new ShowDatabaseManager(this);
+		tvdb = new TheTVDBApi("35A222B84DD0FA85");
 		
 		list = (ListView) findViewById(R.id.search_results);
 		// Get the intent, verify the action and get the query
@@ -61,8 +63,8 @@ public class SearchShows extends Activity {
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
                 // getting values from selected ListItem
-                String name = ((TextView) view.findViewById(R.id.show_name)).getText().toString();
                 String showid = ((TextView) view.findViewById(R.id.show_id)).getText().toString();
+                Log.d("Show", showid + "");
                 new getShowInfoTask().execute(showid);
             }
         });
@@ -71,32 +73,25 @@ public class SearchShows extends Activity {
 	
 	class getShowInfoTask extends AsyncTask<String, Void, Void> {
 		Show show = new Show();
-		EpisodeList epList = new EpisodeList();
-		static final String URL = "http://services.tvrage.com/feeds/full_show_info.php?sid=";
+		List<Episode> eps = new ArrayList<Episode>();
+		String showid = "";
 	
 	    @Override
 	    protected Void doInBackground(String... params) {
-	    	Helper parser = new Helper();
-			String xml = parser.getXmlFromUrl(URL + params[0]);
-			Document doc = parser.getDomElement(xml);
+	    	Log.d("SERIES ID", params[0]);
+	    	Series tmp = tvdb.getSeries(params[0], "en");
+	    	showid = params[0];
 			
-			List<ShowInfo> showList = TVRageParser.getSearchShow(doc);
-
-			ShowInfo tmp = showList.get(0);
-			
-            show.setId(tmp.getShowID());
-            show.setName(tmp.getShowName());
-            show.setAirDay(tmp.getAirDay());
-            show.setAirTime(tmp.getAirTime());
+            show.setId(Integer.parseInt(tmp.getId()));
+            show.setName(tmp.getSeriesName());
+            show.setAirDay(tmp.getAirsDayOfWeek());
+            show.setAirTime(tmp.getAirsTime());
             show.setGenre(StringUtils.join(tmp.getGenres(), ", "));
-            show.setNumSeasons(tmp.getTotalSeasons());
-            show.setRunning(tmp.getEnded().length() > 0);
-            show.setRunTime(tmp.getRuntime());
-            show.setSummary(tmp.getSummary());
+            //show.setRunning(tmp.getStatus());
+            show.setRunTime(Integer.parseInt(tmp.getRuntime()));
+            show.setSummary(tmp.getOverview());
 			
-			epList = TVRageParser.getEpisodeList(doc);
-			
-			Log.d("Latest Episode", epList.getLatestEpisode().getEpisodeNumber().getSxxEyy());
+			eps = tvdb.getAllEpisodes(params[0], "en");
 			
 	        return null;
 	
@@ -106,7 +101,8 @@ public class SearchShows extends Activity {
 	    protected void onPostExecute(Void result) {
 	        super.onPostExecute(result);
             db.addShow(show);
-            db.addEpisodeList(epList);
+            Log.d("showid", showid +"");
+            db.addEpisodeList(showid, eps);
             Toast.makeText(getApplicationContext(), "Show added!", Toast.LENGTH_SHORT).show();
             finish();
 	    }
@@ -118,26 +114,18 @@ public class SearchShows extends Activity {
 	}
 
 	class SearchShowsTask extends AsyncTask<String, Void, Void> {
-			// All static variables
-		 static final String URL = "http://services.tvrage.com/feeds/search.php?show=";
 		 // XML node keys
-		 ArrayList<HashMap<String, String>> menuItems = new ArrayList<HashMap<String, String>>();
+		 ArrayList<HashMap<String, String>> searchResults = new ArrayList<HashMap<String, String>>();
 	
 	    @Override
 	    protected Void doInBackground(String... params) {
-	    	Helper parser = new Helper();
-	    	Log.e("SEARCH", params[0]);
-	    	String searchStr = params[0].replace(' ', '.');
-			String xml = parser.getXmlFromUrl(URL + searchStr);
-			Document doc = parser.getDomElement(xml);
-			 
-			NodeList nl = doc.getElementsByTagName(KEY_ITEM);
-			for (int i = 0; i < nl.getLength(); i++) {
+	    	List<Series> search = tvdb.searchSeries(params[0], "en");
+			for (int i = 0; i < search.size(); i++) {
 				HashMap<String, String> map = new HashMap<String, String>();
-				Element e = (Element) nl.item(i);
-				map.put(KEY_ID, parser.getValue(e, KEY_ID));
-				map.put(KEY_NAME, parser.getValue(e, KEY_NAME));
-				menuItems.add(map);
+				Series s = search.get(i);
+				map.put(KEY_ID, s.getId());
+				map.put(KEY_NAME, s.getSeriesName());
+				searchResults.add(map);
 			}
 	        return null;
 	
@@ -147,7 +135,7 @@ public class SearchShows extends Activity {
 	    protected void onPostExecute(Void result) {
 	        super.onPostExecute(result);
 			 
-	        ListAdapter adapter = new SimpleAdapter(SearchShows.this, menuItems,
+	        ListAdapter adapter = new SimpleAdapter(SearchShows.this, searchResults,
 	                R.layout.search_result_list_item,
 	                new String[] { KEY_NAME, KEY_ID }, new int[] {
 	                        R.id.show_name, R.id.show_id});

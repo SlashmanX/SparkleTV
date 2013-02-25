@@ -2,7 +2,6 @@ package com.teamsparkle.sparkletv.helpers;
 
 import org.pojava.datetime.DateTime;
 
-import com.omertron.tvrageapi.model.EpisodeList;
 
 public class Show {
 	private int id;

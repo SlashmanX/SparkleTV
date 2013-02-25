@@ -16,9 +16,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.google.gson.JsonArray;
-import com.omertron.tvrageapi.model.Episode;
-import com.omertron.tvrageapi.model.EpisodeList;
-import com.omertron.tvrageapi.model.EpisodeNumber;
+import com.omertron.thetvdbapi.model.Episode;
 import com.team.sparkle.sparkletv.R;
 import com.teamsparkle.sparkletv.helpers.Helper;
 import com.teamsparkle.sparkletv.helpers.Show;
@@ -79,21 +77,18 @@ public class ScheduleFragment extends Fragment {
         View v = inflater.inflate(R.layout.schedule_layout, container, false);
         ListView scheduleList = (ListView) v.findViewById(R.id.schedule_list_view);
         
-		EpisodeList epList = db.getEpisodeList(getShowID());
-		for(Map.Entry<EpisodeNumber, Episode> m : epList.getEpisodeList().entrySet()) {
-    		Episode ep = m.getValue();
+		List<Episode> epList = db.getEpisodeList(getShowID());
+		for(Episode ep : epList) {
 			HashMap<String, String> map = new HashMap<String, String>();
-			map.put("epid", Integer.toString(ep.getId()));
-			map.put("episode_name", ep.getTitle());
-			map.put("SE", ep.getEpisodeNumber().getSxxEyy());
-			map.put("show_name", epList.getShowName());
-			map.put("se", ep.getEpisodeNumber().getSxE());
+			map.put("epid", ep.getId());
+			map.put("episode_name", ep.getEpisodeName());
+			map.put("summary", ep.getOverview());
 			schedule.add(map);
 		}
 		
 		ListAdapter listAdapter = new SimpleAdapter(getActivity(), schedule, R.layout.schedule_list_item,
-				new String[] { "episode_name", "epid", "SE", "show_name", "se" }, 
-				new int[] { R.id.episode_name, R.id.episode_id, R.id.episode_season_episode, R.id.episode_show_name, R.id.episode_season_text});
+				new String[] { "episode_name", "epid", "SE", "show_name", "se", "summary" }, 
+				new int[] { R.id.episode_name, R.id.episode_id, R.id.episode_season_episode, R.id.episode_show_name, R.id.episode_season_text, R.id.episode_summary});
         
         scheduleList.setAdapter(listAdapter);
         scheduleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

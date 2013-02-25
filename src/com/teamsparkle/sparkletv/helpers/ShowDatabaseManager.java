@@ -1,13 +1,12 @@
 package com.teamsparkle.sparkletv.helpers;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.pojava.datetime.DateTime;
 
-import com.omertron.tvrageapi.model.Episode;
-import com.omertron.tvrageapi.model.EpisodeList;
-import com.omertron.tvrageapi.model.EpisodeNumber;
+import com.omertron.thetvdbapi.model.Episode;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -106,22 +105,22 @@ public class ShowDatabaseManager {
                 }
         }
         
-        public void addEpisodeList(EpisodeList epList)
+        public void addEpisodeList(String showid, List<Episode> epList)
         {
-        	for(Map.Entry<EpisodeNumber, Episode> m : epList.getEpisodeList().entrySet()) {
-        		Episode ep = m.getValue();
+        	Log.d("ADDING EPISODES", showid + "Number: "+ epList.size());
+        	for(Episode ep : epList) {
                 if(episodeExists(ep) == -1)
                 {
                         ContentValues values = new ContentValues();
 
                         values.put(EPISODE_TABLE_ROW_ID, ep.getId());
-                        values.put(EPISODE_TABLE_ROW_NAME, ep.getTitle());
-                        values.put(EPISODE_TABLE_ROW_AIR_DATE, ep.getAirDate().toString());
-                        values.put(EPISODE_TABLE_ROW_SEASON, ep.getSeason());
-                        values.put(EPISODE_TABLE_ROW_EPISODE, ep.getEpisode());
-                        values.put(EPISODE_TABLE_ROW_SUMMARY, ep.getSummary());
+                        values.put(EPISODE_TABLE_ROW_NAME, ep.getEpisodeName());
+                        values.put(EPISODE_TABLE_ROW_AIR_DATE, ep.getFirstAired());
+                        values.put(EPISODE_TABLE_ROW_SEASON, ep.getSeasonNumber());
+                        values.put(EPISODE_TABLE_ROW_EPISODE, ep.getEpisodeNumber());
+                        values.put(EPISODE_TABLE_ROW_SUMMARY, ep.getOverview());
                         values.put(EPISODE_TABLE_ROW_DOWNLOADED, false);
-                        values.put(EPISODE_TABLE_ROW_SHOW_ID, epList.getShowId());
+                        values.put(EPISODE_TABLE_ROW_SHOW_ID, showid);
                         
                  
                         // ask the database object to insert the new data 
@@ -207,10 +206,9 @@ public class ShowDatabaseManager {
             return temp;
         }
         
-        public EpisodeList getEpisodeList(int showID) {
-        	EpisodeList epList = new EpisodeList();
-        	EpisodeNumber epNum = new EpisodeNumber();
-        	epList.setShowId(showID);
+        public List<Episode> getEpisodeList(int showID) {
+        	Log.d("GETTING EPISODES", Integer.toString(showID));
+        	List<Episode> epList = new ArrayList<Episode>();
         	Episode tmp = new Episode();
         	Cursor cursor = null;
         	
@@ -227,19 +225,18 @@ public class ShowDatabaseManager {
                     null, null, null, null, null
                 );
                 cursor.moveToNext();
+                Log.d("Num episodes", cursor.getCount() +"");
                 do
                 {
                 	tmp = new Episode();
-                    tmp.setTitle(cursor.getString(0));
-                    tmp.setAirDate(cursor.getString(1));
-                    epNum = new EpisodeNumber();
-                    epNum.setSeason(cursor.getInt(2));
-                    epNum.setEpisode(cursor.getInt(3));
-                    tmp.setEpisodeNumber(epNum);
-                    tmp.setSummary(cursor.getString(4));
+                    tmp.setEpisodeName(cursor.getString(0));
+                    tmp.setFirstAired(cursor.getString(1));
+                    tmp.setSeasonNumber(cursor.getInt(2));
+                    tmp.setEpisodeNumber(cursor.getInt(3));
+                    tmp.setOverview(cursor.getString(4));
                     tmp.setDownloaded(cursor.getInt(5) == 1);
                     
-                    epList.addEpisode(tmp);
+                    epList.add(tmp);
                 }
                 // move the cursor's pointer up one position.
                 while (cursor.moveToNext());
@@ -251,8 +248,6 @@ public class ShowDatabaseManager {
             }
             
             cursor.close();
-            
-            epList.setShowName(getShow(showID).getName());
         	
         	return epList;
         }

@@ -1,48 +1,42 @@
 /*
- *      Copyright (c) 2004-2013 Stuart Boston
+ *      Copyright (c) 2004-2013 Matthew Altman & Stuart Boston
  *
- *      This file is part of the TVRage API.
+ *      This file is part of TheTVDB API.
  *
- *      TVRage API is free software: you can redistribute it and/or modify
+ *      TheTVDB API is free software: you can redistribute it and/or modify
  *      it under the terms of the GNU General Public License as published by
  *      the Free Software Foundation, either version 3 of the License, or
  *      any later version.
  *
- *      TVRage API is distributed in the hope that it will be useful,
+ *      TheTVDB API is distributed in the hope that it will be useful,
  *      but WITHOUT ANY WARRANTY; without even the implied warranty of
  *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *      GNU General Public License for more details.
  *
  *      You should have received a copy of the GNU General Public License
- *      along with TVRage API.  If not, see <http://www.gnu.org/licenses/>.
+ *      along with TheTVDB API.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.omertron.tvrageapi.tools;
+package com.omertron.thetvdbapi.tools;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
-import java.nio.charset.UnsupportedCharsetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 import org.apache.commons.codec.binary.Base64;
-
-import android.util.Log;
 
 /**
  * Web browser with simple cookies support
  */
 public final class WebBrowser {
 
-    private static Map<String, String> browserProperties = new HashMap<String, String>();
+    private static final Map<String, String> BROWSER_PROPERTIES = new HashMap<String, String>();
     private static Map<String, Map<String, String>> cookies = new HashMap<String, Map<String, String>>();
     private static String proxyHost = null;
     private static String proxyPort = null;
@@ -52,25 +46,29 @@ public final class WebBrowser {
     private static int webTimeoutConnect = 25000;   // 25 second timeout
     private static int webTimeoutRead = 90000;      // 90 second timeout
 
-    // Hide the constructor
+    /**
+     * Constructor for WebBrowser. Does instantiates the browser properties.
+     */
     protected WebBrowser() {
-        // prevents calls from subclass
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("WebBrowser can not be instantiated!");
     }
 
     /**
-     * Populate the browser properties
+     * Request the web page at the specified URL
+     *
+     * @param url
+     * @throws IOException
      */
-    private static void populateBrowserProperties() {
-        if (browserProperties.isEmpty()) {
-            browserProperties.put("User-Agent", "Mozilla/5.25 Netscape/5.0 (Windows; I; Win95)");
-        }
-    }
-
     public static String request(String url) throws IOException {
         return request(new URL(url));
     }
 
+    /**
+     * Open a connection using proxy parameters if they exist.
+     *
+     * @param url
+     * @throws IOException
+     */
     public static URLConnection openProxiedConnection(URL url) throws IOException {
         if (proxyHost != null) {
             System.getProperties().put("proxySet", "true");
@@ -87,47 +85,87 @@ public final class WebBrowser {
         return cnx;
     }
 
+    /**
+     * Request the web page at the specified URL
+     *
+     * @param url
+     * @throws IOException
+     */
     public static String request(URL url) throws IOException {
-    	Log.d("Browser", "Requesting: "+ url);
-        StringWriter content = null;
+        StringBuilder content = new StringBuilder();
+
+        BufferedReader in = null;
+        URLConnection cnx = null;
+        InputStreamReader isr = null;
+        GZIPInputStream zis = null;
 
         try {
-            content = new StringWriter();
+            cnx = openProxiedConnection(url);
 
-            BufferedReader in = null;
-            URLConnection cnx = null;
-            try {
-                cnx = openProxiedConnection(url);
+            sendHeader(cnx);
+            readHeader(cnx);
 
-                sendHeader(cnx);
-                readHeader(cnx);
+            // Check the content encoding of the connection. Null content encoding is standard HTTP
+            if (cnx.getContentEncoding() == null) {
+                //in = new BufferedReader(new InputStreamReader(cnx.getInputStream(), getCharset(cnx)));
+                isr = new InputStreamReader(cnx.getInputStream(), "UTF-8");
+            } else if (cnx.getContentEncoding().equalsIgnoreCase("gzip")) {
+                zis = new GZIPInputStream(cnx.getInputStream());
+                isr = new InputStreamReader(zis, "UTF-8");
+            } else {
+                return "";
+            }
 
-                in = new BufferedReader(new InputStreamReader(cnx.getInputStream(), getCharset(cnx)));
-                String line;
-                while ((line = in.readLine()) != null) {
-                    content.write(line);
-                }
-            } finally {
-                if (in != null) {
+            in = new BufferedReader(isr);
+
+            String line;
+            while ((line = in.readLine()) != null) {
+                content.append(line);
+            }
+        } finally {
+            if (in != null) {
+                try {
                     in.close();
-                }
-                if (cnx != null && cnx instanceof HttpURLConnection) {
-                    ((HttpURLConnection)cnx).disconnect();
+                } catch (IOException ex) {
+                	ex.printStackTrace();
                 }
             }
-            return content.toString();
-        } finally {
-            if (content != null) {
-                content.close();
+
+            if (isr != null) {
+                try {
+                    isr.close();
+                } catch (IOException ex) {
+                	ex.printStackTrace();
+                }
+            }
+
+            if (zis != null) {
+                try {
+                    zis.close();
+                } catch (IOException ex) {
+                	ex.printStackTrace();
+                }
+            }
+
+            if (cnx instanceof HttpURLConnection) {
+                ((HttpURLConnection) cnx).disconnect();
             }
         }
+        return content.toString();
     }
 
+    /**
+     * Set the header information for the connection
+     *
+     * @param cnx
+     */
     private static void sendHeader(URLConnection cnx) {
-        populateBrowserProperties();
+        if (BROWSER_PROPERTIES.isEmpty()) {
+            BROWSER_PROPERTIES.put("User-Agent", "Mozilla/5.25 Netscape/5.0 (Windows; I; Win95)");
+        }
 
         // send browser properties
-        for (Map.Entry<String, String> browserProperty : browserProperties.entrySet()) {
+        for (Map.Entry<String, String> browserProperty : BROWSER_PROPERTIES.entrySet()) {
             cnx.setRequestProperty(browserProperty.getKey(), browserProperty.getValue());
         }
         // send cookies
@@ -137,6 +175,11 @@ public final class WebBrowser {
         }
     }
 
+    /**
+     * Create the cookies for the header
+     *
+     * @param cnx
+     */
     private static String createCookieHeader(URLConnection cnx) {
         String host = cnx.getURL().getHost();
         StringBuilder cookiesHeader = new StringBuilder();
@@ -157,6 +200,11 @@ public final class WebBrowser {
         return cookiesHeader.toString();
     }
 
+    /**
+     * Read the header information into the cookies
+     *
+     * @param cnx
+     */
     private static void readHeader(URLConnection cnx) {
         // read new cookies and update our cookies
         for (Map.Entry<String, List<String>> header : cnx.getHeaderFields().entrySet()) {
@@ -193,59 +241,72 @@ public final class WebBrowser {
         }
     }
 
-    private static Charset getCharset(URLConnection cnx) {
-        Charset charset = null;
-        // content type will be string like "text/html; charset=UTF-8" or "text/html"
-        String contentType = cnx.getContentType();
-        if (contentType != null) {
-            // changed 'charset' to 'harset' in regexp because some sites send 'Charset'
-            Matcher m = Pattern.compile("harset *=[ '\"]*([^ ;'\"]+)[ ;'\"]*").matcher(contentType);
-            if (m.find()) {
-                String encoding = m.group(1);
-                try {
-                    charset = Charset.forName(encoding);
-                } catch (UnsupportedCharsetException e) {
-                    // there will be used default charset
-                }
-            }
-        }
-        if (charset == null) {
-            charset = Charset.defaultCharset();
-        }
-
-        return charset;
-    }
-
+    /**
+     * Return the proxy host name
+     *
+     */
     public static String getProxyHost() {
         return proxyHost;
     }
 
+    /**
+     * Set the proxy host name
+     *
+     * @param tvdbProxyHost
+     */
     public static void setProxyHost(String tvdbProxyHost) {
         WebBrowser.proxyHost = tvdbProxyHost;
     }
 
+    /**
+     * Get the proxy port
+     *
+     */
     public static String getProxyPort() {
         return proxyPort;
     }
 
-    public static void setProxyPort(String tvdbProxyPort) {
-        WebBrowser.proxyPort = tvdbProxyPort;
+    /**
+     * Set the proxy port
+     *
+     * @param proxyPort
+     */
+    public static void setProxyPort(String proxyPort) {
+        WebBrowser.proxyPort = proxyPort;
     }
 
+    /**
+     * Get the proxy username
+     *
+     */
     public static String getProxyUsername() {
         return proxyUsername;
     }
 
-    public static void setProxyUsername(String tvdbProxyUsername) {
-        WebBrowser.proxyUsername = tvdbProxyUsername;
+    /**
+     * Set the proxy username
+     *
+     * @param proxyUsername
+     */
+    public static void setProxyUsername(String proxyUsername) {
+        WebBrowser.proxyUsername = proxyUsername;
     }
 
+    /**
+     * Get the proxy password
+     *
+     */
     public static String getProxyPassword() {
         return proxyPassword;
     }
 
-    public static void setProxyPassword(String tvdbProxyPassword) {
-        WebBrowser.proxyPassword = tvdbProxyPassword;
+    /**
+     * Set the proxy password. Note this will automatically encode the password
+     *
+     * @param proxyPassword
+     */
+    public static void setProxyPassword(String proxyPassword) {
+        WebBrowser.proxyPassword = proxyPassword;
 
         if (proxyUsername != null) {
             proxyEncodedPassword = proxyUsername + ":" + proxyPassword;
@@ -253,18 +314,36 @@ public final class WebBrowser {
         }
     }
 
+    /**
+     * Get the current web connect timeout value
+     *
+     */
     public static int getWebTimeoutConnect() {
         return webTimeoutConnect;
     }
 
+    /**
+     * Get the current web read timeout value
+     *
+     */
     public static int getWebTimeoutRead() {
         return webTimeoutRead;
     }
 
+    /**
+     * Set the web connect timeout value
+     *
+     * @param webTimeoutConnect
+     */
     public static void setWebTimeoutConnect(int webTimeoutConnect) {
         WebBrowser.webTimeoutConnect = webTimeoutConnect;
     }
 
+    /**
+     * Set the web read timeout value
+     *
+     * @param webTimeoutRead
+     */
     public static void setWebTimeoutRead(int webTimeoutRead) {
         WebBrowser.webTimeoutRead = webTimeoutRead;
     }
