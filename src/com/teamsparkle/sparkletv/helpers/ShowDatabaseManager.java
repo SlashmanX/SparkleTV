@@ -257,9 +257,15 @@ public class ShowDatabaseManager {
         
         public void clearDatabase()
         {
+        	try{
                 db.execSQL("DELETE FROM " + SHOW_TABLE_NAME);
                 db.execSQL("DELETE FROM sqlite_sequence where name='"+ SHOW_TABLE_NAME +"'"); 
+                db.execSQL("DELETE FROM " + EPISODE_TABLE_NAME);
+                db.execSQL("DELETE FROM sqlite_sequence where name='"+ EPISODE_TABLE_NAME +"'"); 
                 db.execSQL("VACUUM");
+        	}catch(SQLException e) {
+        		//Exception here doesn't matter
+        	}
         }
         
         public int showExists(Show show) {
