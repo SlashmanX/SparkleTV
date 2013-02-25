@@ -87,12 +87,13 @@ public class ScheduleFragment extends Fragment {
 			map.put("episode_name", ep.getTitle());
 			map.put("SE", ep.getEpisodeNumber().getSxxEyy());
 			map.put("show_name", epList.getShowName());
+			map.put("se", ep.getEpisodeNumber().getSxE());
 			schedule.add(map);
 		}
 		
 		ListAdapter listAdapter = new SimpleAdapter(getActivity(), schedule, R.layout.schedule_list_item,
-				new String[] { "episode_name", "epid", "SE", "show_name" }, 
-				new int[] { R.id.episode_name, R.id.episode_id, R.id.episode_season_episode, R.id.episode_show_name});
+				new String[] { "episode_name", "epid", "SE", "show_name", "se" }, 
+				new int[] { R.id.episode_name, R.id.episode_id, R.id.episode_season_episode, R.id.episode_show_name, R.id.episode_season_text});
         
         scheduleList.setAdapter(listAdapter);
         scheduleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

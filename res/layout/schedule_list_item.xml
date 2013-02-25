@@ -3,20 +3,8 @@
     android:id="@+id/GridLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:columnCount="2"
+    android:columnCount="3"
     android:orientation="horizontal" >
-
-    <TextView
-        android:id="@+id/episode_name"
-        android:layout_gravity="fill_horizontal"
-        android:padding="20dp"
-        android:text="TextView"
-        android:textSize="35dp" />
-
-    <Space
-        android:layout_column="1"
-        android:layout_gravity="fill_vertical"
-        android:layout_row="6" />
 
     <TextView
         android:id="@+id/episode_id"
@@ -41,5 +29,24 @@
         android:layout_row="5"
         android:text="TextView"
         android:visibility="gone" />
+    
+    <TextView
+        android:id="@+id/episode_season_text"
+        style="@android:style/TextAppearance.Small"
+        android:layout_column="0"
+        android:layout_gravity="left|center_vertical"
+        android:layout_row="0"
+        android:padding="20dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/episode_name"
+        style="@android:style/TextAppearance.Large"
+        android:layout_column="1"
+        android:layout_columnSpan="2"
+        android:layout_gravity="left|center_vertical"
+        android:layout_row="0"
+        android:padding="20dp"
+        android:text="TextView" />
 
 </GridLayout>

@@ -11,35 +11,17 @@
         android:layout_gravity="fill_horizontal"
         android:padding="20dp"
         android:text="TextView"
-        android:textSize="35dp" />
-
-    <TextView
-        android:id="@+id/lastEpisodeLabel"
-        android:layout_column="0"
-        android:layout_gravity="left"
-        android:padding="5dp"
-        android:text="Latest Episode:" />
-
-    <Space
         android:layout_column="1"
-        android:layout_gravity="fill_vertical"
-        android:layout_row="5" />
-
+        android:layout_row="0"
+        style="@android:style/TextAppearance.Large" />
     <TextView
-        android:id="@+id/season_num"
-        android:layout_column="0"
-        android:layout_gravity="center_horizontal|top"
+        android:id="@+id/fav_show_summary"
+        android:layout_gravity="fill_horizontal"
+        android:padding="20dp"
+        android:text="TextView"
+        android:layout_column="1"
         android:layout_row="1"
-        android:padding="5dp"
-        android:text="Season" />
-
-    <TextView
-        android:id="@+id/episode_num"
-        android:layout_column="0"
-        android:layout_gravity="top|right"
-        android:layout_row="1"
-        android:padding="5dp"
-        android:text="Episode" />
+        style="@android:style/TextAppearance.Medium" />
 
     <TextView
         android:id="@+id/show_id"

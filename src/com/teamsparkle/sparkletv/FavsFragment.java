@@ -115,12 +115,13 @@ public class FavsFragment extends ListFragment {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("showid", Integer.toString(tmp.get(i).getId()));
 			map.put("name", tmp.get(i).getName());
+			map.put("summary", tmp.get(i).getSummary());
 			favShows.add(map);
 		}
 		
 		ListAdapter listAdapter = new SimpleAdapter(getActivity(), favShows, R.layout.fav_show_list_item,
-				new String[] { "name", "showid" }, 
-				new int[] { R.id.fav_show_name, R.id.show_id});
+				new String[] { "name", "showid", "summary" }, 
+				new int[] { R.id.fav_show_name, R.id.show_id, R.id.fav_show_summary});
         
         setListAdapter(listAdapter);
 	}
