@@ -41,6 +41,8 @@
             android:value="com.teamsparkle.sparkletv.SparkleTVActivity" />
             
        </activity>
+	    <service android:name="com.teamsparkle.sparkletv.WatcherService" />
+
     </application>
 
 </manifest>
