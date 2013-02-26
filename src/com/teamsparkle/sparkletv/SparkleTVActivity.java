@@ -19,17 +19,23 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 
 
 public class SparkleTVActivity extends Activity {
 	public ShowDatabaseManager db;
 	public SearchView searchView;
 	ArrayList<HashMap<String, String>> favShows = new ArrayList<HashMap<String, String>>();
+	Intent watcherIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frag_layout);
         db = new ShowDatabaseManager(this);
+        
+        watcherIntent = new Intent(this, WatcherService.class);
+        
+        startService(watcherIntent);
 	}
 	
 	@Override
