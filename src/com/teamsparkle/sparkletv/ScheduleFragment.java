@@ -49,6 +49,7 @@ public class ScheduleFragment extends Fragment {
      * show the text at 'index'.
      */
 	public ShowDatabaseManager db;
+	public Show show;
     public static ScheduleFragment newInstance(int showid) {
     	ScheduleFragment f = new ScheduleFragment();
 
@@ -69,6 +70,7 @@ public class ScheduleFragment extends Fragment {
             Bundle savedInstanceState) {
     	ArrayList<HashMap<String, String>> schedule = new ArrayList<HashMap<String, String>>();
     	db = new ShowDatabaseManager(getActivity().getApplicationContext());
+    	show = db.getShow(getShowID());
     	
         if (container == null) {
             
@@ -85,6 +87,7 @@ public class ScheduleFragment extends Fragment {
 			map.put("summary", ep.getOverview());
 			map.put("SE", ep.getSxxEyy());
 			map.put("se", ep.getSxE());
+			map.put("show_name", show.getName());
 			schedule.add(map);
 		}
 		
@@ -99,13 +102,31 @@ public class ScheduleFragment extends Fragment {
         		String SxxEyy = ((TextView) view.findViewById(R.id.episode_season_episode)).getText().toString();
         		String searchString = showName + "."+ SxxEyy;
         		Toast.makeText(getActivity(), searchString.replace(' ', '.'), Toast.LENGTH_LONG).show();
-        		new GetTorrentTask().execute(searchString.replace(' ', '.'));
+        		new GetTorrentFileTask().execute(searchString.replace(' ', '.'));
         	}
         });
         return v;
     }
     
-    class GetTorrentTask extends AsyncTask<String, Void, Void> {
+    class DownloadTorrentFileTask extends AsyncTask<String, Void, Void> {
+
+		@Override
+		protected Void doInBackground(String... params) {
+			Log.d("Download", "Downloading file");
+			Helper helper = new Helper();
+			helper.downloadFileFromUrl(params[0], "/storage/sdcard1/SparkleTV/torrents", params[1]+".torrent");
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			Toast.makeText(getActivity(), "Torrent Downloaded", Toast.LENGTH_SHORT).show();
+		}
+    	
+    }
+    
+    class GetTorrentFileTask extends AsyncTask<String, Void, Void> {
     	String filename = "download";
 		// All static variables
     	public List<TorrentSearchResult> searchResults;
@@ -126,16 +147,9 @@ public class ScheduleFragment extends Fragment {
 		{
 			torrentLink = searchResults.get(i).torrent;
 		}
-		
-		DownloadManager dm = (DownloadManager) getActivity().getSystemService(getActivity().DOWNLOAD_SERVICE);
-        Request request = new Request(Uri.parse(torrentLink));
-        File sdCard = Environment.getExternalStorageDirectory();
-        File dir = new File(sdCard.getAbsolutePath() + "/SparkleTV/torrents");
-        dir.mkdirs();
-        request.setDestinationUri(Uri.fromFile(dir));
-        request.setTitle(filename +".torrent");
-        long enqueue = dm.enqueue(request);
 		Toast.makeText(getActivity(), torrentLink, Toast.LENGTH_SHORT).show();
+		
+		new DownloadTorrentFileTask().execute(torrentLink, filename);
     }
 
     @Override

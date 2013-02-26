@@ -1,12 +1,18 @@
 package com.teamsparkle.sparkletv.helpers;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
@@ -151,6 +157,37 @@ public class Helper {
         return null;
         
      }
+	
+	public void downloadFileFromUrl(String sUrl, String saveLocation, String saveFilename)
+	{
+		try {
+            URL url = new URL(sUrl);
+            URLConnection connection = url.openConnection();
+            connection.connect();
+            
+            File saveLoc = new File(saveLocation);
+            saveLoc.mkdirs();
+            
+            File saveFile = new File(saveLoc.getAbsolutePath() + "/"+ saveFilename);
+
+            // download the file
+            InputStream input = new BufferedInputStream(url.openStream());
+            OutputStream output = new FileOutputStream(saveFile);
+
+            byte data[] = new byte[1024];
+            int count;
+            while ((count = input.read(data)) != -1) {
+                output.write(data, 0, count);
+            }
+
+            output.flush();
+            output.close();
+            input.close();
+        } catch (Exception e) {
+        	Log.d("Couldn't dl file", e.getMessage());
+        }
+		return;
+	}
 	
 	public static List<TorrentSearchResult> getJSONfromURL(String url) {
 
