@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
+import com.teamsparkle.sparkletv.helpers.ParsedEpisode;
 import com.teamsparkle.sparkletv.helpers.RegexPatterns;
+import com.teamsparkle.sparkletv.helpers.ShowDatabaseManager;
 
 import android.app.Service;
 import android.content.Intent;
@@ -19,7 +21,7 @@ public class WatcherService extends Service
 {
 	private static final String TAG = "WatcherService";
 	private static final String FOLDER = "testing"; // folder to watch on sd card
-	private final ArrayList<String> patterns = new RegexPatterns().getPatterns();
+	private RegexPatterns regex = new RegexPatterns();
 
 	String sdCard = Environment.getExternalStorageDirectory().getAbsolutePath();
 	
@@ -35,57 +37,24 @@ public class WatcherService extends Service
 	public void onStart(Intent intent, int startId) 
 	{
 		Log.d(TAG, "Service STARTED");
+
+		final ShowDatabaseManager db = new ShowDatabaseManager(getApplicationContext());
 		Toast.makeText(getApplicationContext(), "Watching: "+ android.os.Environment.getExternalStorageDirectory().toString() + "/" + FOLDER, Toast.LENGTH_SHORT).show();
 		FileObserver observer = new FileObserver( "/storage/sdcard1/" + FOLDER) 
 		{
 	        @Override
 	        public void onEvent(int event, String file) 
 	        {
-	        	boolean matched = false;
 	            if(event == FileObserver.MOVED_TO)
 	            { 
 	                Log.d(TAG, "File moved [" + android.os.Environment.getExternalStorageDirectory().toString() + "/" + FOLDER + "/" + file + "]");
-	                Log.d(TAG, "Patterns: "+ patterns.size());
-	                Pattern p;
-	                Matcher m;
-	                for(String s : patterns)
-	                {
-	                	Log.d(TAG, s);
-	                	p = Pattern.compile(s);
-	            		m = p.matcher(file);
-	            		if(m.find())
-	            		{
-	            			matched = true;
-	            			Log.d(TAG, "Found match");
-	            			
-	            			if(m.group("seriesname") != null)
-	            			{
-	            				Log.d(TAG, "Series: "+ m.group("seriesname"));
-	            			}
-	            			if(m.group("seasonnumber") != null)
-	            			{
-	            				Log.d(TAG, "Season: "+ m.group("seasonnumber"));
-	            			}
-	            			if(m.group("episodenumber") != null)
-	            			{
-	            				Log.d(TAG, "Episode: "+ m.group("episodenumber"));
-	            			}
-	            			if(m.group("episodenumberstart") != null)
-	            			{
-	            				Log.d(TAG, "Episode Start: "+ m.group("episodenumberstart"));
-	            			}
-	            			if(m.group("episodenumberend") != null)
-	            			{
-	            				Log.d(TAG, "Episode End: "+ m.group("episodenumberend"));
-	            			}
-
-		            		break;
-	            		}
-	                }
 	                
-	                if(!matched)
+	                ParsedEpisode pe = regex.parseEpisode(file);
+	                
+	                if(pe != null)
 	                {
-	                	Log.d(TAG, "No match found");
+	                	pe.setEpisodeName(db.getEpisodeName(Integer.parseInt(pe.getSeasonNumber()), Integer.parseInt(pe.getEpisodeNumber())));
+		                Log.d("PARSED EPISODE", pe.toString());
 	                }
 	            
 	            }

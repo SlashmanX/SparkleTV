@@ -135,6 +135,39 @@ public class ShowDatabaseManager {
         	}
         }
         
+        public String getEpisodeName(int season, int episode) 
+        {
+        	Cursor cursor = null;
+        	String epName = "";
+            
+            try
+            {
+                cursor = db.query
+                (
+                    EPISODE_TABLE_NAME,
+                    new String[] { EPISODE_TABLE_ROW_NAME},
+                    EPISODE_TABLE_ROW_SEASON + "=" + season +" AND "+ EPISODE_TABLE_ROW_EPISODE +" = "+ episode,
+                    null, null, null, null, null
+                );
+                cursor.moveToNext();
+                do
+                {
+                    epName = cursor.getString(0);
+                }
+                // move the cursor's pointer up one position.
+                while (cursor.moveToNext());
+            }
+            catch (SQLException e) 
+            {
+            	Log.e("DB ERROR", e.toString());
+               	e.printStackTrace();
+            }
+            
+            cursor.close();
+     
+            return epName;
+        }
+        
         /*public void updateMatch(long rowID, Match match)
         {
                 // this is a key value pair holder used by android's SQLite functions

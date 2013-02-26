@@ -1,6 +1,11 @@
 package com.teamsparkle.sparkletv.helpers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import android.util.Log;
+
 import com.google.code.regexp.Pattern;
 import com.google.code.regexp.Matcher;
 
@@ -42,6 +47,47 @@ public class RegexPatterns {
 
 	public void setPatterns(ArrayList<String> patterns) {
 		this.patterns = patterns;
+	}
+	
+	public ParsedEpisode parseEpisode(String file) {
+		Pattern p;
+        Matcher m;
+        String TAG = "RegexParser";
+        ParsedEpisode pe = new ParsedEpisode();
+        Map<String, String> ng = new HashMap<String, String>();
+        for(String s : patterns)
+        {
+        	Log.d(TAG, s);
+        	p = Pattern.compile(s);
+    		m = p.matcher(file);
+    		if(m.find())
+    		{
+    			ng = m.namedGroups();
+    			if(ng.containsKey("seriesname"))
+    			{
+    				pe.setShowName(ng.get("seriesname"));
+    			}
+    			if(ng.containsKey("seasonnumber"))
+    			{
+    				pe.setSeasonNumber(ng.get("seasonnumber"));
+    			}
+    			if(ng.containsKey("episodenumber"))
+    			{
+    				pe.setEpisodeNumber(ng.get("episodenumber"));
+    			}
+    			if(ng.containsKey("episodenumberstart"))
+    			{
+    				pe.setEpisodeStart(ng.get("episodenumberstart"));
+    			}
+    			if(ng.containsKey("episodenumberend"))
+    			{
+    				pe.setEpisodeEnd(ng.get("episodenumberend"));
+    			}
+
+        		break;
+    		}
+        }
+        return pe;
 	}
 	
 	
