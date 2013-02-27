@@ -37,10 +37,17 @@
 	    <activity
             android:name="com.teamsparkle.sparkletv.ScheduleActivity">
 	        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.teamsparkle.sparkletv.SparkleTVActivity" />
+            	android:name="android.support.PARENT_ACTIVITY"
+            	android:value="com.teamsparkle.sparkletv.SparkleTVActivity" />
             
        </activity>
+       <activity
+           	android:name="com.teamsparkle.sparkletv.SetPreferenceActivity"
+           	android:label="@string/app_name" >
+	        <meta-data
+            	android:name="android.support.PARENT_ACTIVITY"
+            	android:value="com.teamsparkle.sparkletv.SparkleTVActivity" />
+        </activity>
 	    <service android:name="com.teamsparkle.sparkletv.WatcherService" />
 
     </application>

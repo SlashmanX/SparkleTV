@@ -19,6 +19,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 
 
 public class SparkleTVActivity extends Activity {
@@ -39,6 +40,11 @@ public class SparkleTVActivity extends Activity {
 		{
 			searchView.setIconified(true);
 			searchView.setIconifiedByDefault(true);
+			searchView.clearFocus();
+			if(searchView.hasFocus())
+			{
+				NavUtils.navigateUpFromSameTask(this);
+			}
 		}
 	}
 	@Override
@@ -70,7 +76,12 @@ public class SparkleTVActivity extends Activity {
                 break;
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
-                return true;
+                break;
+            case R.id.menu_settings:   
+            	Intent intent = new Intent();
+            	intent.setClass(SparkleTVActivity.this, SetPreferenceActivity.class);
+            	startActivityForResult(intent, 0); 
+            	break;
         }
         return true;
     }
