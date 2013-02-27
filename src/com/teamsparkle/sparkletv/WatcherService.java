@@ -1,5 +1,6 @@
 package com.teamsparkle.sparkletv;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +14,12 @@ import com.teamsparkle.sparkletv.helpers.ShowDatabaseManager;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.os.FileObserver;
 import android.os.IBinder;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -42,40 +45,54 @@ public class WatcherService extends Service
 		Log.d(TAG, "Service STARTED");
 
 		final ShowDatabaseManager db = new ShowDatabaseManager(getApplicationContext());
+		
+		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
 
 		final TheTVDBApi tvdb = new TheTVDBApi("35A222B84DD0FA85");
-		FileObserver observer = new FileObserver( "/storage/sdcard1/" + FOLDER) 
+		final String folderToWatch = sharedPrefs.getString("folderwatcher_preference", null);
+		final String moveTo = sharedPrefs.getString("filemover_preference", null);
+		if(folderToWatch != null && moveTo != null)
 		{
-	        @Override
-	        public void onEvent(int event, String file) 
-	        {
-	            if(event == FileObserver.MOVED_TO)
-	            { 
-	                Log.d(TAG, "File moved [" + android.os.Environment.getExternalStorageDirectory().toString() + "/" + FOLDER + "/" + file + "]");
-	                
-	                ParsedEpisode pe = regex.parseEpisode(file);
-	                
-	                if(pe != null)
-	                {
-	                	
-	                	// TODO: Update database to be able to use fulltext search to check show names
-	                	String searchStr = pe.getShowName().replaceAll("[^A-Za-z0-9]", " ");
-	                	List<Series> searchResults = tvdb.searchSeries(searchStr, "en");
-	                	for(Series s : searchResults){
-	                		if(db.showExists(Integer.parseInt(s.getId())))
-	                		{
-	                			pe.setShowName(s.getSeriesName());
-	                			break;
-	                		}
-	                	}
-	                	pe.setEpisodeName(db.getEpisodeName(Integer.parseInt(pe.getSeasonNumber()), Integer.parseInt(pe.getEpisodeNumber())));
-		                Log.d("PARSED EPISODE", pe.toString());
-	                }
-	            
-	            }
-	        }
-	    };
-	    observer.startWatching(); // start the observer
+			FileObserver observer = new FileObserver(folderToWatch) 
+			{
+		        @Override
+		        public void onEvent(int event, String file) 
+		        {
+		            if(event == FileObserver.MOVED_TO)
+		            { 
+		            	String ext = file.substring(file.lastIndexOf('.') + 1);
+		                Log.d(TAG, "File moved [" + android.os.Environment.getExternalStorageDirectory().toString() + "/" + FOLDER + "/" + file + "]");
+		                
+		                ParsedEpisode pe = regex.parseEpisode(file);
+		                
+		                if(pe != null)
+		                {
+		                	
+		                	// TODO: Update database to be able to use fulltext search to check show names
+		                	String searchStr = pe.getShowName().replaceAll("[^A-Za-z0-9]", " ");
+		                	List<Series> searchResults = tvdb.searchSeries(searchStr, "en");
+		                	for(Series s : searchResults){
+		                		if(db.showExists(Integer.parseInt(s.getId())))
+		                		{
+		                			pe.setShowName(s.getSeriesName());
+		                			break;
+		                		}
+		                	}
+		                	pe.setEpisodeName(db.getEpisodeName(Integer.parseInt(pe.getSeasonNumber()), Integer.parseInt(pe.getEpisodeNumber())));
+			                Log.d("PARSED EPISODE", pe.toString());
+			                File oldFile = new File(folderToWatch + file);
+			                File newFileLoc = new File(moveTo + pe.getShowName() +"/Season "+ pe.getSeasonNumber() + "/");
+			                newFileLoc.mkdirs();
+			                File newFileName = new File(newFileLoc + String.format("%02d", pe.getEpisodeNumber()) + " - "+ pe.getEpisodeName()+"."+ ext);
+			                oldFile.renameTo(newFileName);
+		                }
+		            
+		            }
+		        }
+		    };
+		    observer.startWatching(); // start the observer
+		}
 	}   
 
 	@Override

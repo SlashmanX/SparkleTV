@@ -8,6 +8,7 @@ import com.teamsparkle.sparkletv.helpers.Show;
 import com.teamsparkle.sparkletv.helpers.ShowDatabaseManager;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +21,8 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
 
 public class SparkleTVActivity extends Activity {
@@ -86,6 +89,17 @@ public class SparkleTVActivity extends Activity {
             	Intent intent = new Intent();
             	intent.setClass(SparkleTVActivity.this, SetPreferenceActivity.class);
             	startActivityForResult(intent, 0); 
+            	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                
+                OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                		stopService(watcherIntent);
+                		startService(watcherIntent);
+                		return;
+                	}
+                };
+                
+                prefs.registerOnSharedPreferenceChangeListener(listener);
             	break;
         }
         return true;

@@ -26,10 +26,12 @@ import com.teamsparkle.sparkletv.helpers.TorrentSearchResult;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Request;
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -114,7 +116,8 @@ public class ScheduleFragment extends Fragment {
 		protected Void doInBackground(String... params) {
 			Log.d("Download", "Downloading file");
 			Helper helper = new Helper();
-			helper.downloadFileFromUrl(params[0], "/storage/sdcard1/SparkleTV/torrents", params[1]+".torrent");
+			SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(ScheduleFragment.this.getActivity());
+			helper.downloadFileFromUrl(params[0], sharedPrefs.getString("downloadlocation_preference", null), params[1]+".torrent");
 			return null;
 		}
 		
