@@ -17,7 +17,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class ShowDatabaseManager {
-        
         private SQLiteDatabase db; // a reference to the database manager class.
         private final String DB_NAME = "sparkletv"; // the name of our database
         private final int DB_VERSION = 3; // the version of the database
@@ -217,9 +216,9 @@ public class ShowDatabaseManager {
                     new String[] { EPISODE_TABLE_ROW_NAME, 
                     		EPISODE_TABLE_ROW_AIR_DATE, EPISODE_TABLE_ROW_SEASON, 
                     		EPISODE_TABLE_ROW_EPISODE, EPISODE_TABLE_ROW_SUMMARY, 
-                    		EPISODE_TABLE_ROW_DOWNLOADED},
+                    		EPISODE_TABLE_ROW_DOWNLOADED, "("+ EPISODE_TABLE_ROW_SEASON +" * 1000 + "+ EPISODE_TABLE_ROW_EPISODE +") AS agg"},
                     		EPISODE_TABLE_ROW_SHOW_ID + "=" + showID,
-                    null, null, null, null, null
+                    null, null, null,"agg ASC" , null
                 );
                 cursor.moveToNext();
                 do
@@ -313,8 +312,8 @@ public class ShowDatabaseManager {
                 try
                 {
                         // ask the database object to create the cursor.
-                	// TODO: Change to RAW query to use JOIN
-                    cursor = db.rawQuery("SELECT * FROM "+ SHOW_TABLE_NAME, null);
+                	// NEEDS RAW QUERY TO USE JOIN TO GET LATEST AIRED EPISODE
+                    cursor = db.rawQuery("SELECT * FROM "+ SHOW_TABLE_NAME + " ORDER BY "+ SHOW_TABLE_ROW_NAME + " ASC", null);
      
                     // move the cursor's pointer to position zero.
                     cursor.moveToFirst();
