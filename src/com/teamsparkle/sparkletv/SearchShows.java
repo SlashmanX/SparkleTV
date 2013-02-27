@@ -10,6 +10,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -41,6 +42,7 @@ public class SearchShows extends Activity {
 	static final String KEY_NAME = "name";
 	public ShowDatabaseManager db;
 	public TheTVDBApi tvdb;
+	ProgressDialog searchingDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,8 @@ public class SearchShows extends Activity {
 		setContentView(R.layout.search_show);
 		db = new ShowDatabaseManager(this);
 		tvdb = new TheTVDBApi("35A222B84DD0FA85");
+		searchingDialog = ProgressDialog.show(SearchShows.this, "", 
+                "Searching. Please wait...", true);
 		
 		list = (ListView) findViewById(R.id.search_results);
 		// Get the intent, verify the action and get the query
@@ -72,6 +76,8 @@ public class SearchShows extends Activity {
 	}
 	
 	class getShowInfoTask extends AsyncTask<String, Void, Void> {
+
+		ProgressDialog addingDialog = ProgressDialog.show(SearchShows.this, "","Adding Episode List to Database. Please wait...", true);
 		Show show = new Show();
 		List<Episode> eps = new ArrayList<Episode>();
 		String showid = "";
@@ -101,9 +107,8 @@ public class SearchShows extends Activity {
 	    protected void onPostExecute(Void result) {
 	        super.onPostExecute(result);
             db.addShow(show);
-            Log.d("showid", showid +"");
             db.addEpisodeList(showid, eps);
-            Toast.makeText(getApplicationContext(), "Show added!", Toast.LENGTH_SHORT).show();
+            addingDialog.dismiss();
             finish();
 	    }
 	
@@ -140,6 +145,7 @@ public class SearchShows extends Activity {
 	                R.layout.search_result_list_item,
 	                new String[] { KEY_NAME, KEY_ID, "summary" }, new int[] {
 	                        R.id.search_show_name, R.id.search_show_id, R.id.search_show_summary});
+	        searchingDialog.dismiss();
 	        list.setAdapter(adapter);
 	    }
 	
