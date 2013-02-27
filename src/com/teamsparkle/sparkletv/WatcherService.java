@@ -1,9 +1,12 @@
 package com.teamsparkle.sparkletv;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
+import com.omertron.thetvdbapi.TheTVDBApi;
+import com.omertron.thetvdbapi.model.Series;
 import com.teamsparkle.sparkletv.helpers.ParsedEpisode;
 import com.teamsparkle.sparkletv.helpers.RegexPatterns;
 import com.teamsparkle.sparkletv.helpers.ShowDatabaseManager;
@@ -39,7 +42,8 @@ public class WatcherService extends Service
 		Log.d(TAG, "Service STARTED");
 
 		final ShowDatabaseManager db = new ShowDatabaseManager(getApplicationContext());
-		Toast.makeText(getApplicationContext(), "Watching: "+ android.os.Environment.getExternalStorageDirectory().toString() + "/" + FOLDER, Toast.LENGTH_SHORT).show();
+
+		final TheTVDBApi tvdb = new TheTVDBApi("35A222B84DD0FA85");
 		FileObserver observer = new FileObserver( "/storage/sdcard1/" + FOLDER) 
 		{
 	        @Override
@@ -53,6 +57,17 @@ public class WatcherService extends Service
 	                
 	                if(pe != null)
 	                {
+	                	
+	                	// TODO: Update database to be able to use fulltext search to check show names
+	                	String searchStr = pe.getShowName().replaceAll("[^A-Za-z0-9]", " ");
+	                	List<Series> searchResults = tvdb.searchSeries(searchStr, "en");
+	                	for(Series s : searchResults){
+	                		if(db.showExists(Integer.parseInt(s.getId())))
+	                		{
+	                			pe.setShowName(s.getSeriesName());
+	                			break;
+	                		}
+	                	}
 	                	pe.setEpisodeName(db.getEpisodeName(Integer.parseInt(pe.getSeasonNumber()), Integer.parseInt(pe.getEpisodeNumber())));
 		                Log.d("PARSED EPISODE", pe.toString());
 	                }

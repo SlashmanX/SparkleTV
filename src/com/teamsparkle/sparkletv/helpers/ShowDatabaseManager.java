@@ -313,6 +313,25 @@ public class ShowDatabaseManager {
         	return pos;
         }
         
+        public boolean showExists(int showID) {
+        	Cursor cursor = db.rawQuery("SELECT * FROM "+ SHOW_TABLE_NAME +" WHERE "+ SHOW_TABLE_ROW_ID +"="+ showID, null);
+           
+        	boolean exists = (cursor.getCount() > 0);
+           
+           
+        	int pos = -1;
+           
+        	if(exists)
+        	{
+        		cursor.moveToNext();
+        		pos = cursor.getInt(0);
+        	}
+           
+        	cursor.close();
+           
+        	return exists;
+        }
+        
         public int episodeExists(Episode ep) {
         	Cursor cursor = db.rawQuery("SELECT * FROM "+ EPISODE_TABLE_NAME +" WHERE "+ EPISODE_TABLE_ROW_ID +"="+ ep.getId(), null);
            
