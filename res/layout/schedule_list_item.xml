@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/GridLayout1"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:columnCount="3"
-    android:padding="5dp"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:padding="5dp" >
 
     <TextView
         android:id="@+id/episode_id"
         android:layout_column="0"
         android:layout_gravity="left|top"
-        android:layout_row="4"
+        android:layout_row="5"
         android:text="TextView"
         android:visibility="gone" />
 
@@ -19,45 +19,76 @@
         android:id="@+id/episode_season_episode"
         android:layout_column="0"
         android:layout_gravity="left|top"
-        android:layout_row="5"
-        android:text="TextView"
+        android:layout_row="6"
+        android:text="S00E00"
         android:visibility="gone" />
-    
+
     <TextView
         android:id="@+id/episode_show_name"
         android:layout_column="0"
         android:layout_gravity="left|top"
-        android:layout_row="5"
+        android:layout_row="6"
         android:text="TextView"
         android:visibility="gone" />
-    
+
     <TextView
         android:id="@+id/episode_season_text"
         style="@android:style/TextAppearance.Small"
         android:layout_column="0"
         android:layout_gravity="left|center_vertical"
         android:layout_row="0"
-        android:text="TextView" />
+        android:text="00x00" />
 
     <TextView
         android:id="@+id/episode_name"
         style="@android:style/TextAppearance.Large"
         android:layout_column="1"
-        android:padding="5dp"
         android:layout_gravity="left|center_vertical"
         android:layout_row="0"
+        android:padding="2dp"
         android:text="Episode Name" />
-    
+
     <TextView
         android:id="@+id/episode_summary"
         style="@android:style/TextAppearance.Small"
         android:layout_column="0"
         android:layout_columnSpan="3"
         android:layout_gravity="left|center_vertical"
-        android:layout_row="1"
-        android:padding="5dp"
+        android:layout_row="2"
         android:ellipsize="end"
         android:maxLines="3"
+        android:padding="2dp"
         android:text="Summary" />
+    <TextView
+        android:id="@+id/episode_air_date_text"
+        style="@android:style/TextAppearance.Small"
+        android:layout_column="0"
+        android:layout_gravity="left|center_vertical"
+        android:layout_row="1"
+        android:padding="2dp"
+        android:text="Airdate:" />
+    <TextView
+        android:id="@+id/episode_air_date"
+        style="@android:style/TextAppearance.Small"
+        android:layout_column="1"
+        android:layout_gravity="left|center_vertical"
+        android:layout_row="1"
+        android:padding="2dp"
+        android:text="27th Feb 2013" />
+
+    <TextView
+        android:id="@+id/episode_downloaded"
+        style="@android:style/TextAppearance.Small"
+        android:layout_column="2"
+        android:layout_gravity="right|center_vertical"
+        android:layout_row="1"
+        android:text="DOWNLOADED"
+        android:textColor="#FFFFFF"
+        android:shadowColor="#000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="0.6"
+        android:padding="2dp"
+        android:background="@drawable/rounded_edges" />
 
 </GridLayout>

@@ -93,7 +93,7 @@ public class SearchShows extends Activity {
             show.setAirDay(tmp.getAirsDayOfWeek());
             show.setAirTime(tmp.getAirsTime());
             show.setGenre(StringUtils.join(tmp.getGenres(), ", "));
-            //show.setRunning(tmp.getStatus());
+            show.setRunning(!(tmp.getStatus().equals("Ended")));
             show.setRunTime(Integer.parseInt(tmp.getRuntime()));
             show.setSummary(tmp.getOverview());
 			
