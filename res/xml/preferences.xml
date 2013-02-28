@@ -5,33 +5,31 @@
     <PreferenceCategory
             android:title="Torrent Download Location">
 
-        <EditTextPreference
+        <Preference
                 android:key="downloadlocation_preference"
                 android:title="Torrent Location"
-                android:summary="Where downloaded torrents should be saved"
-                android:dialogTitle="Torrent Location" />
+                android:summary="Where downloaded torrents should be saved"/>
 
     </PreferenceCategory>
 
     <PreferenceCategory
             android:title="Folder Watcher Location">
 
-        <EditTextPreference
+        <Preference
                 android:key="folderwatcher_preference"
                 android:title="Watcher Location"
-                android:summary="Folder where your completed episodes will be downloaded to"
-                android:dialogTitle="Location to watch for files" />
+                android:summary="Folder where your completed episodes will be downloaded to" />
 
     </PreferenceCategory>
     
     <PreferenceCategory
             android:title="File Mover Location">
 
-        <EditTextPreference
+        <Preference
                 android:key="filemover_preference"
                 android:title="File Mover"
-                android:summary="Folder where your completed episode will be moved to"
-                android:dialogTitle="Location to move files" />
+                android:summary="Folder where your completed episode will be moved to" />
+
 
     </PreferenceCategory>
 

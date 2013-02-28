@@ -21,6 +21,9 @@ public class PrefsFragment extends PreferenceFragment {
 	
 	SharedPreferences sharedPrefs;
 	SharedPreferences.Editor editor;
+	Preference torrentLoc;
+    Preference watcherLoc;
+    Preference moveLoc;
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,9 +34,13 @@ public class PrefsFragment extends PreferenceFragment {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(PrefsFragment.this.getActivity());
         editor = sharedPrefs.edit();
         
-        Preference torrentLoc = findPreference("downloadlocation_preference");
-        Preference watcherLoc = findPreference("folderwatcher_preference");
-        Preference moveLoc = findPreference("filemover_preference");
+        torrentLoc = findPreference("downloadlocation_preference");
+        watcherLoc = findPreference("folderwatcher_preference");
+        moveLoc = findPreference("filemover_preference");
+        
+        torrentLoc.setSummary(sharedPrefs.getString("downloadlocation_preference", null));
+        watcherLoc.setSummary(sharedPrefs.getString("folderwatcher_preference", null));
+        moveLoc.setSummary(sharedPrefs.getString("filemover_preference", null));
         
         torrentLoc.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 			
@@ -86,13 +93,16 @@ public class PrefsFragment extends PreferenceFragment {
 	        }
 	        switch (requestCode) {
 	        case 0:
-	            editor.putString("downloadlocation_preference", newPref);   
+	            editor.putString("downloadlocation_preference", newPref);  
+	            torrentLoc.setSummary(newPref);
 	            break;
 	        case 1:
-	            editor.putString("folderwatcher_preference", newPref);   
+	            editor.putString("folderwatcher_preference", newPref);
+	            watcherLoc.setSummary(newPref);
 	            break;
 	        case 2:
-	            editor.putString("filemover_preference", newPref);   
+	            editor.putString("filemover_preference", newPref);
+	            moveLoc.setSummary(newPref);
 	            break;
 	        }
 	        
