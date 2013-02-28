@@ -51,6 +51,8 @@
         </activity>
 	    <service android:name="com.teamsparkle.sparkletv.WatcherService" />
 
+	    <activity android:name="group.pals.android.lib.ui.filechooser.FileChooserActivity" />
+	    <service android:name="group.pals.android.lib.ui.filechooser.services.LocalFileProvider" />
     </application>
 
 </manifest>

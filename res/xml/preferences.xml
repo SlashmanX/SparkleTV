@@ -18,7 +18,7 @@
 
         <EditTextPreference
                 android:key="folderwatcher_preference"
-                android:title="title_edittext_preference"
+                android:title="Watcher Location"
                 android:summary="Folder where your completed episodes will be downloaded to"
                 android:dialogTitle="Location to watch for files" />
 
