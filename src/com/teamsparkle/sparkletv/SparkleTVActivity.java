@@ -3,26 +3,21 @@ package com.teamsparkle.sparkletv;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.team.sparkle.sparkletv.R;
-import com.teamsparkle.sparkletv.helpers.Show;
-import com.teamsparkle.sparkletv.helpers.ShowDatabaseManager;
-
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.app.NavUtils;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.SimpleAdapter;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.NavUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.SearchView;
+
+import com.team.sparkle.sparkletv.R;
+import com.teamsparkle.sparkletv.helpers.ShowDatabaseManager;
 
 
 public class SparkleTVActivity extends Activity {

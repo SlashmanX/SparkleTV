@@ -1,13 +1,11 @@
 package com.teamsparkle.sparkletv;
 
+import group.pals.android.lib.ui.filechooser.FileChooserActivity;
+import group.pals.android.lib.ui.filechooser.io.localfile.LocalFile;
+import group.pals.android.lib.ui.filechooser.services.IFileProvider;
+
 import java.io.File;
 import java.util.List;
-
-import group.pals.android.lib.ui.filechooser.FileChooserActivity;
-import group.pals.android.lib.ui.filechooser.services.IFileProvider;
-import group.pals.android.lib.ui.filechooser.io.localfile.LocalFile;
-
-import com.team.sparkle.sparkletv.R;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +13,8 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.util.Log;
+
+import com.team.sparkle.sparkletv.R;
 
 public class PrefsFragment extends PreferenceFragment {
 	
@@ -85,7 +84,8 @@ public class PrefsFragment extends PreferenceFragment {
     @Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
     	if(data != null){
-	        List<LocalFile> files = (List<LocalFile>) data.getSerializableExtra(FileChooserActivity._Results);
+	        @SuppressWarnings("unchecked")
+			List<LocalFile> files = (List<LocalFile>) data.getSerializableExtra(FileChooserActivity._Results);
 	        String newPref = "";
 	        for (File f : files)
 	        {

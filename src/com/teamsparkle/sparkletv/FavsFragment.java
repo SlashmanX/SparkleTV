@@ -3,22 +3,19 @@ package com.teamsparkle.sparkletv;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.team.sparkle.sparkletv.R;
-import com.teamsparkle.sparkletv.ScheduleActivity;
-import com.teamsparkle.sparkletv.helpers.Show;
-import com.teamsparkle.sparkletv.helpers.ShowDatabaseManager;
-
+import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.app.FragmentTransaction;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
+
+import com.team.sparkle.sparkletv.R;
+import com.teamsparkle.sparkletv.helpers.Show;
+import com.teamsparkle.sparkletv.helpers.ShowDatabaseManager;
 
 public class FavsFragment extends ListFragment {
     boolean isDualPane;

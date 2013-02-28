@@ -1,21 +1,10 @@
 package com.teamsparkle.sparkletv;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-
-import com.google.code.regexp.Matcher;
-import com.google.code.regexp.Pattern;
-import com.omertron.thetvdbapi.TheTVDBApi;
-import com.omertron.thetvdbapi.model.Series;
-import com.team.sparkle.sparkletv.R;
-import com.teamsparkle.sparkletv.helpers.ParsedEpisode;
-import com.teamsparkle.sparkletv.helpers.RegexPatterns;
-import com.teamsparkle.sparkletv.helpers.ShowDatabaseManager;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
-import android.app.Notification.Builder;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -23,16 +12,21 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.os.FileObserver;
 import android.os.IBinder;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.omertron.thetvdbapi.TheTVDBApi;
+import com.omertron.thetvdbapi.model.Series;
+import com.team.sparkle.sparkletv.R;
+import com.teamsparkle.sparkletv.helpers.ParsedEpisode;
+import com.teamsparkle.sparkletv.helpers.RegexPatterns;
+import com.teamsparkle.sparkletv.helpers.ShowDatabaseManager;
 
 @SuppressLint("NewApi")
 public class WatcherService extends Service
 {
 	private static final String TAG = "WatcherService";
-	private static final String FOLDER = "testing"; // folder to watch on sd card
 	private RegexPatterns regex = new RegexPatterns();
 
 	String sdCard = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -62,6 +56,8 @@ public class WatcherService extends Service
 		final TheTVDBApi tvdb = new TheTVDBApi("35A222B84DD0FA85");
 		final String folderToWatch = sharedPrefs.getString("folderwatcher_preference", null);
 		final String moveTo = sharedPrefs.getString("filemover_preference", null);
+		
+		// Indent city
 		if(folderToWatch != null && moveTo != null)
 		{
 			Toast.makeText(getApplicationContext(), "Watching: "+ folderToWatch, Toast.LENGTH_SHORT).show();

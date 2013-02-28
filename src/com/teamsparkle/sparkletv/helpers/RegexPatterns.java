@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.util.Log;
-
-import com.google.code.regexp.Pattern;
 import com.google.code.regexp.Matcher;
+import com.google.code.regexp.Pattern;
 
 public class RegexPatterns {
 

@@ -1,49 +1,32 @@
 package com.teamsparkle.sparkletv;
 
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import com.google.gson.JsonArray;
-import com.omertron.thetvdbapi.model.Episode;
-import com.team.sparkle.sparkletv.R;
-import com.teamsparkle.sparkletv.helpers.Helper;
-import com.teamsparkle.sparkletv.helpers.Show;
-import com.teamsparkle.sparkletv.helpers.ShowDatabaseManager;
-import com.teamsparkle.sparkletv.helpers.TorrentSearchResult;
-
-import android.app.DownloadManager;
-import android.app.DownloadManager.Request;
 import android.app.Fragment;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.omertron.thetvdbapi.model.Episode;
+import com.team.sparkle.sparkletv.R;
+import com.teamsparkle.sparkletv.helpers.Helper;
+import com.teamsparkle.sparkletv.helpers.Show;
+import com.teamsparkle.sparkletv.helpers.ShowDatabaseManager;
+import com.teamsparkle.sparkletv.helpers.TorrentSearchResult;
 
 public class ScheduleFragment extends Fragment {
     /**
@@ -103,7 +86,6 @@ public class ScheduleFragment extends Fragment {
         		String showName = ((TextView) view.findViewById(R.id.episode_show_name)).getText().toString();
         		String SxxEyy = ((TextView) view.findViewById(R.id.episode_season_episode)).getText().toString();
         		String searchString = showName + "."+ SxxEyy;
-        		Toast.makeText(getActivity(), searchString.replace(' ', '.'), Toast.LENGTH_LONG).show();
         		new GetTorrentFileTask().execute(searchString.replace(' ', '.'));
         	}
         });
@@ -142,22 +124,21 @@ public class ScheduleFragment extends Fragment {
 	
 	    }
 
-    @Override
-    protected void onPostExecute(Void result) {
-        super.onPostExecute(result);
-		String torrentLink = "";
-		for(int i = 0; i < searchResults.size(); i++)
-		{
-			torrentLink = searchResults.get(i).torrent;
-		}
-		Toast.makeText(getActivity(), torrentLink, Toast.LENGTH_SHORT).show();
-		
-		new DownloadTorrentFileTask().execute(torrentLink, filename);
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-}
+	    @Override
+	    protected void onPostExecute(Void result) {
+	        super.onPostExecute(result);
+			String torrentLink = "";
+			for(int i = 0; i < searchResults.size(); i++)
+			{
+				torrentLink = searchResults.get(i).torrent;
+			}
+			
+			new DownloadTorrentFileTask().execute(torrentLink, filename);
+	    }
+	
+	    @Override
+	    protected void onPreExecute() {
+	        super.onPreExecute();
+	    }
+	}
 }

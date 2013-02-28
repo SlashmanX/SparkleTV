@@ -2,11 +2,6 @@ package com.teamsparkle.sparkletv.helpers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import org.pojava.datetime.DateTime;
-
-import com.omertron.thetvdbapi.model.Episode;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -15,6 +10,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.omertron.thetvdbapi.model.Episode;
 
 public class ShowDatabaseManager {
         private SQLiteDatabase db; // a reference to the database manager class.
@@ -316,16 +313,6 @@ public class ShowDatabaseManager {
         	Cursor cursor = db.rawQuery("SELECT * FROM "+ SHOW_TABLE_NAME +" WHERE "+ SHOW_TABLE_ROW_ID +"="+ showID, null);
            
         	boolean exists = (cursor.getCount() > 0);
-           
-           
-        	int pos = -1;
-           
-        	if(exists)
-        	{
-        		cursor.moveToNext();
-        		pos = cursor.getInt(0);
-        	}
-           
         	cursor.close();
            
         	return exists;
