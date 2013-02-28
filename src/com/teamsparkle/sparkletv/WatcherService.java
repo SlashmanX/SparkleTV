@@ -73,29 +73,32 @@ public class WatcherService extends Service
 		            if(event == FileObserver.MOVED_TO)
 		            { 
 		            	String ext = file.substring(file.lastIndexOf('.') + 1);
-		                ParsedEpisode pe = regex.parseEpisode(file);
-		                
-		                if(pe != null)
-		                {
-		                	
-		                	// TODO: Update database to be able to use fulltext search to check show names
-		                	String searchStr = pe.getShowName().replaceAll("[^A-Za-z0-9]", " ");
-		                	List<Series> searchResults = tvdb.searchSeries(searchStr, "en");
-		                	for(Series s : searchResults){
-		                		if(db.showExists(Integer.parseInt(s.getId())))
-		                		{
-		                			pe.setShowName(s.getSeriesName());
-		                			break;
-		                		}
-		                	}
-		                	pe.setEpisodeName(db.getEpisodeName(Integer.parseInt(pe.getSeasonNumber()), Integer.parseInt(pe.getEpisodeNumber())));
-			                Log.d("PARSED EPISODE", pe.toString());
-			                File oldFile = new File(folderToWatch +"/"+ file);
-			                File newFileLoc = new File(moveTo +"/"+ pe.getShowName() +"/Season "+ pe.getSeasonNumber() + "/");
-			                newFileLoc.mkdirs();
-			                File newFileName = new File(newFileLoc + String.format("%02d", pe.getEpisodeNumber()) + " - "+ pe.getEpisodeName()+"."+ ext);
-			                oldFile.renameTo(newFileName);
-		                }
+		            	if(ext.equalsIgnoreCase("mkv") || ext.equalsIgnoreCase("avi") || ext.equalsIgnoreCase("mp4"))
+		            	{
+			                ParsedEpisode pe = regex.parseEpisode(file);
+			                
+			                if(pe != null)
+			                {
+			                	
+			                	// TODO: Update database to be able to use fulltext search to check show names
+			                	String searchStr = pe.getShowName().replaceAll("[^A-Za-z0-9]", " ");
+			                	List<Series> searchResults = tvdb.searchSeries(searchStr, "en");
+			                	for(Series s : searchResults){
+			                		if(db.showExists(Integer.parseInt(s.getId())))
+			                		{
+			                			pe.setShowName(s.getSeriesName());
+			                			break;
+			                		}
+			                	}
+			                	pe.setEpisodeName(db.getEpisodeName(Integer.parseInt(pe.getSeasonNumber()), Integer.parseInt(pe.getEpisodeNumber())));
+				                Log.d("PARSED EPISODE", pe.toString());
+				                File oldFile = new File(folderToWatch +"/"+ file);
+				                File newFileLoc = new File(moveTo +"/"+ pe.getShowName() +"/Season "+ Integer.parseInt(pe.getSeasonNumber()) + "/");
+				                newFileLoc.mkdirs();
+				                File newFileName = new File(newFileLoc.getAbsolutePath()+ "/" + String.format("%02d", Integer.parseInt(pe.getEpisodeNumber())) + " - "+ pe.getEpisodeName()+"."+ ext);
+				                oldFile.renameTo(newFileName);
+			                }
+		            	}
 		            
 		            }
 		        }
