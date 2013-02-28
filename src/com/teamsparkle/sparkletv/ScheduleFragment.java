@@ -117,7 +117,7 @@ public class ScheduleFragment extends Fragment {
 			Log.d("Download", "Downloading file");
 			Helper helper = new Helper();
 			SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(ScheduleFragment.this.getActivity());
-			helper.downloadFileFromUrl(params[0], sharedPrefs.getString("downloadlocation_preference", null), params[1]+".torrent");
+			helper.downloadFileFromUrl(params[0], sharedPrefs.getString("downloadlocation_preference", null)+"/", params[1]+".torrent");
 			return null;
 		}
 		

@@ -93,8 +93,10 @@ public class SparkleTVActivity extends Activity {
                 
                 OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
                 	public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                		stopService(watcherIntent);
-                		startService(watcherIntent);
+                		if(key.equals("folderwatcher_preference") || key.equals("filemover_preference")){
+	                		stopService(watcherIntent);
+	                		startService(watcherIntent);
+                		}
                 		return;
                 	}
                 };

@@ -8,10 +8,15 @@ import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
 import com.omertron.thetvdbapi.TheTVDBApi;
 import com.omertron.thetvdbapi.model.Series;
+import com.team.sparkle.sparkletv.R;
 import com.teamsparkle.sparkletv.helpers.ParsedEpisode;
 import com.teamsparkle.sparkletv.helpers.RegexPatterns;
 import com.teamsparkle.sparkletv.helpers.ShowDatabaseManager;
 
+import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.Notification.Builder;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +28,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+@SuppressLint("NewApi")
 public class WatcherService extends Service
 {
 	private static final String TAG = "WatcherService";
@@ -37,13 +43,17 @@ public class WatcherService extends Service
 	{
 		super.onCreate();
 		Log.d(TAG, "Service CREATED");
+
 	}
 
 	@Override
 	public void onStart(Intent intent, int startId) 
 	{
 		Log.d(TAG, "Service STARTED");
-
+		Intent sintent = new Intent(this, SparkleTVActivity.class);
+		PendingIntent pIntent = PendingIntent.getActivity(this, 0, sintent, 0);
+		Notification noti = new Notification.Builder(this).setSmallIcon(R.drawable.ic_launcher).setContentTitle("SparkleTV: Watching folder").setContentIntent(pIntent).build();
+		startForeground(1, noti);
 		final ShowDatabaseManager db = new ShowDatabaseManager(getApplicationContext());
 		
 		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -54,6 +64,7 @@ public class WatcherService extends Service
 		final String moveTo = sharedPrefs.getString("filemover_preference", null);
 		if(folderToWatch != null && moveTo != null)
 		{
+			Toast.makeText(getApplicationContext(), "Watching: "+ folderToWatch, Toast.LENGTH_SHORT).show();
 			FileObserver observer = new FileObserver(folderToWatch) 
 			{
 		        @Override
@@ -62,8 +73,6 @@ public class WatcherService extends Service
 		            if(event == FileObserver.MOVED_TO)
 		            { 
 		            	String ext = file.substring(file.lastIndexOf('.') + 1);
-		                Log.d(TAG, "File moved [" + android.os.Environment.getExternalStorageDirectory().toString() + "/" + FOLDER + "/" + file + "]");
-		                
 		                ParsedEpisode pe = regex.parseEpisode(file);
 		                
 		                if(pe != null)
@@ -81,8 +90,8 @@ public class WatcherService extends Service
 		                	}
 		                	pe.setEpisodeName(db.getEpisodeName(Integer.parseInt(pe.getSeasonNumber()), Integer.parseInt(pe.getEpisodeNumber())));
 			                Log.d("PARSED EPISODE", pe.toString());
-			                File oldFile = new File(folderToWatch + file);
-			                File newFileLoc = new File(moveTo + pe.getShowName() +"/Season "+ pe.getSeasonNumber() + "/");
+			                File oldFile = new File(folderToWatch +"/"+ file);
+			                File newFileLoc = new File(moveTo +"/"+ pe.getShowName() +"/Season "+ pe.getSeasonNumber() + "/");
 			                newFileLoc.mkdirs();
 			                File newFileName = new File(newFileLoc + String.format("%02d", pe.getEpisodeNumber()) + " - "+ pe.getEpisodeName()+"."+ ext);
 			                oldFile.renameTo(newFileName);
